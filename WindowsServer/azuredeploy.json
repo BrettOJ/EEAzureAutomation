@@ -2,7 +2,7 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.1",
   "parameters": {
-      "storageType": {
+    "storageType": {
       "type": "string",
       "defaultValue": "Premium_LRS",
       "allowedValues": [
@@ -15,7 +15,7 @@
     },
     "vmName": {
       "type": "string",
-      "defaultValue": "O365VM",
+      "defaultValue": "WIN2016VM",
       "metadata": {
         "description": "Local name for the VM can be whatever you want"
       }
@@ -39,22 +39,21 @@
       },
       "defaultValue": "Standard_DS2"
     },
-    "vmOSVersion": {
+    "imageSKU": {
       "type": "string",
-      "defaultValue": "10-Enterprise-N",
       "allowedValues": [
-        "10-Enterprise-N",
-        "7.0-Enterprise-N",
-        "8.1-Enterprise-N"
+        "2012-R2-Datacenter",
+        "2016-Datacenter"
       ],
       "metadata": {
-        "description": "Which version of Windows would like to deploy"
-      }
+        "description": "Windows server SKU"
+      },
+      "defaultValue": "2016-Datacenter"
     },
     "dnsLabelPrefix": {
       "type": "string",
       "metadata": {
-      "description": "DNS Label for the Public IP. Must be lowercase. It should match with the following regular expression: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$ or it will raise an error."
+        "description": "DNS Label for the Public IP. Must be lowercase. It should match with the following regular expression: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$ or it will raise an error."
       }
     },
     "officeVersion": {
@@ -64,10 +63,10 @@
         "Office2016",
         "Office2013"
       ],
-       "metadata": {
+      "metadata": {
         "description": "Which version of Office would you would like to deploy"
       }
-    },    
+    },
     "setupOfficeScriptFileName": {
       "type": "string",
       "defaultValue": "DeployO365SilentWithVersion.ps1",
@@ -77,10 +76,10 @@
     },
     "_artifactsLocation": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/windows-vm-O365/scripts/",
+      "defaultValue": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/WindowsServer/",
       "metadata": {
         "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
-      } 
+      }
     }
   },
     "variables": {
@@ -190,7 +189,7 @@
             "imageReference": {
               "publisher": "[variables('vmImagePublisher')]",
               "offer": "[variables('vmImageOffer')]",
-              "sku": "[parameters('vmOSVersion')]",
+              "sku": "[parameters('imageSKU')]",
               "version": "latest"
             },
             "osDisk": {
