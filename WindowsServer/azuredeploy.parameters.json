@@ -12,10 +12,7 @@
       "value": "GEN-PASSWORD"
     },
     "vmOSVersion": {
-      "value": "10-Enterprise-N"
-    },
-    "officeVersion": {
-      "value": "Office2016"
+      "value": "2012-R2-Datacenter"
     }
   }
 }
