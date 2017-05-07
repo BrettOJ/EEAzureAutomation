@@ -18,7 +18,7 @@
       "value": "myVM001"
     },
     "modulesUrl": {
-      "value": "https://github.com/Azure/azure-quickstart-templates/raw/master/dsc-extension-azure-automation-pullserver/UpdateLCMforAAPull.zip"
+      "value": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/WindowsServer/UpdateLCMforAAPull.zip"
     },
     "configurationFunction": {
       "value": "UpdateLCMforAAPull.ps1\\ConfigureLCMforAAPull"
