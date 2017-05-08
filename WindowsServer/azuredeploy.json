@@ -322,8 +322,8 @@
             {
               "Name": "RegistrationKey",
               "Value": {
-                "UserName": "bojadmin",
-                "Password": "PrivateSettingsRef:registrationKeyPrivate"
+                "UserName": "notused",
+                "Password": "PrivateSettingsRef:registrationKey"
               },
               "TypeName": "System.Management.Automation.PSCredential"
             },
