@@ -77,19 +77,6 @@
         "description": "DSC configuration function to call. Should contain filename and function in format fileName.ps1\\configurationfunction"
       }
     },
-    "registrationKey": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Registration key to use to onboard to the Azure Automation DSC pull/reporting server"
-      }
-    },
-    "registrationUrl": {
-      "type": "string",
-      "defaultValue": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
-      "metadata": {
-        "description": "Registration url of the Azure Automation DSC pull/reporting server"
-      }
-    },
     "nodeConfigurationName": {
       "type": "string",
       "defaultValue": "EEInstalliiS.localhost",
@@ -321,11 +308,8 @@
           "Properties": [
             {
               "Name": "RegistrationKey",
-              "Value": {
-                "UserName": "notused",
-                "Password": "PrivateSettingsRef:registrationKey"
-              },
-              "TypeName": "System.Management.Automation.PSCredential"
+              "Value": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
+             "TypeName": "System.String"
             },
             {
               "Name": "RegistrationUrl",
