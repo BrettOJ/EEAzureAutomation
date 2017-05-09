@@ -1,7 +1,7 @@
 {
-  "itemDisplayName": "Basic RDS farm deployment",
-  "description": "This template creates a basic RDS farm deployment",
-  "summary": "Creates and deploys a fully functional RDS farm",
-  "githubUsername": "MahendraAgrawal",
-  "dateUpdated": "2016-10-12"
+  "itemDisplayName": "Multiple Session Host RDS farm deployment",
+  "description": "This template creates a Windows RDS farm deployment",
+  "summary": "Creates and deploys a fully functional RDS farm, Joins all machines to existing Domain", 
+  "githubUsername": "BrettOJ",
+  "dateUpdated": "2017-05-20"
 }
