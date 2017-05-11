@@ -15,20 +15,6 @@
       },
       "defaultValue": "corp.net.au"
     },
-    "adVnetName": {
-      "type": "string",
-      "metadata": {
-        "description": "The vnet name of AD domain. For example johnvnet1"
-      },
-      "defaultValue": "advnet"
-    },
-    "adSubnetName": {
-      "type": "string",
-      "metadata": {
-        "description": "The subnet name of AD domain. For example johnsubnet1"
-      },
-      "defaultValue": "adSubnet"
-    },
     "adminUsername": {
       "type": "string",
       "metadata": {
@@ -107,10 +93,6 @@
         "Standard_RAGRS",
         "Premium_LRS"
       ]
-    },
-    "TestName": {
-      "type": "string",
-      "minLength": 1
     }
   },
   "variables": {
@@ -122,11 +104,16 @@
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
     "dnsServerPrivateIp": "10.0.0.4",
-    "subnet-id": "[concat(resourceId('Microsoft.Network/virtualNetworks',parameters('adVnetName')),'/subnets/',parameters('adSubnetName'))]",
+    "subnet-id": "[concat(resourceId('Microsoft.Network/virtualNetworks','rds-vNet'),'/subnets/',variables('rds-vNetSubnet1Name'))]",
     "publicIpRef": "publicIp",
     "brokerIpRef": "brokerpublicIp",
     "gatewayIpRef": "gatewaypublicIp",
-    "assetLocation": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/RDSClusterADJoin/"
+    "assetLocation": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/RDSClusterADJoin/",
+    "rds-vNetPrefix": "10.0.0.0/16",
+    "rds-vNetSubnet1Name": "Subnet-1",
+    "rds-vNetSubnet1Prefix": "10.0.0.0/24",
+    "rds-vNetSubnet2Name": "Subnet-2",
+    "rds-vNetSubnet2Prefix": "10.0.1.0/24"
   },
   "resources": [
     {
@@ -803,6 +790,37 @@
           ]
         }
       ]
+    },
+    {
+      "name": "rds-vNet",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-03-30",
+      "dependsOn": [ ],
+      "tags": {
+        "displayName": "rds-vNet"
+      },
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('rds-vNetPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('rds-vNetSubnet1Name')]",
+            "properties": {
+              "addressPrefix": "[variables('rds-vNetSubnet1Prefix')]"
+            }
+          },
+          {
+            "name": "[variables('rds-vNetSubnet2Name')]",
+            "properties": {
+              "addressPrefix": "[variables('rds-vNetSubnet2Prefix')]"
+            }
+          }
+        ]
+      }
     }
 
   ]
