@@ -96,6 +96,21 @@
       "metadata": {
         "description": "DSC configuration function to call. Should contain filename and function in format fileName.ps1\\configurationfunction"
       }
+    },
+    "testType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_ZRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Premium_LRS"
+      ]
+    },
+    "TestName": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "variables": {
@@ -115,7 +130,7 @@
   },
   "resources": [
     {
-       "apiVersion": "2017-03-01",
+      "apiVersion": "2017-03-01",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIpRef')]",
       "location": "[resourceGroup().location]",
@@ -127,7 +142,7 @@
       }
     },
     {
-       "apiVersion": "2017-03-01",
+      "apiVersion": "2017-03-01",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('gatewayIpRef')]",
       "location": "[resourceGroup().location]",
@@ -139,7 +154,7 @@
       }
     },
     {
-       "apiVersion": "2015-05-01-preview",
+      "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('brokerIpRef')]",
       "location": "[resourceGroup().location]",
@@ -151,34 +166,63 @@
       }
     },
     {
-      "apiVersion": "2016-01-01",
-      "type": "Microsoft.Storage/storageAccounts",
       "name": "[variables('storageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
       "location": "[resourceGroup().location]",
+      "apiVersion": "2016-01-01",
+      "sku": {
+        "name": "[variables('storageAccountType')]"
+      },
+      "dependsOn": [],
+      "tags": {
+        "displayName": "StorageAccount"
+      },
+      "kind": "Storage"
+    },
+    {
+      "name": "gw-availabilityset",
+      "type": "Microsoft.Compute/availabilitySets",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [],
+      "tags": {
+        "displayName": "gw-availabilityset"
+      },
       "properties": {
-        "accountType": "[variables('storageAccountType')]"
+        "platformUpdateDomainCount": 1,
+        "platformFaultDomainCount": 1
       }
     },
     {
-      "apiVersion": "2016-04-30-preview",
-      "type": "Microsoft.Compute/availabilitySets",
-      "name": "gw-availabilityset",
-      "location": "[resourceGroup().location]"
-    },
-    {
-      "apiVersion": "2016-04-30-preview",
-      "type": "Microsoft.Compute/availabilitySets",
       "name": "cb-availabilityset",
-      "location": "[resourceGroup().location]"
-    },
-    {
-      "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Compute/availabilitySets",
-      "name": "rdsh-availabilityset",
-      "location": "[resourceGroup().location]"
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [],
+      "tags": {
+        "displayName": "cb-availabilityset"
+      },
+      "properties": {
+        "platformUpdateDomainCount": 1,
+        "platformFaultDomainCount": 1
+      }
     },
     {
-       "apiVersion": "2017-03-01",
+      "name": "rdsh-availabilityset",
+      "type": "Microsoft.Compute/availabilitySets",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [],
+      "tags": {
+        "displayName": "rdsh-availabilityset"
+      },
+      "properties": {
+        "platformUpdateDomainCount": 1,
+        "platformFaultDomainCount": 1
+      }
+    },
+    {
+      "apiVersion": "2017-03-01",
       "type": "Microsoft.Network/loadBalancers",
       "name": "loadBalancer",
       "location": "[resourceGroup().location]",
@@ -382,7 +426,7 @@
       }
     },
     {
-       "apiVersion": "2016-04-30-preview",
+      "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "gw-vm",
       "location": "[resourceGroup().location]",
@@ -760,6 +804,6 @@
         }
       ]
     }
-    
+
   ]
 }
