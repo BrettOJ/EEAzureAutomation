@@ -628,7 +628,9 @@
             },
             "protectedSettings": {}
           },
-          "dependsOn": "[concat('Microsoft.Compute/virtualMachines/', 'rdsh-', copyindex())]"
+          "dependsOn": [
+            "[concat('Microsoft.Compute/virtualMachines/', 'rdsh-', copyindex())]"
+          ]
         }
       ]
     },
