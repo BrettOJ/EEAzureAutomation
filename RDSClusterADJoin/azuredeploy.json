@@ -151,7 +151,7 @@
       }
     },
     {
-      "apiVersion": "2016-04-30-preview",
+      "apiVersion": "2016-01-01",
       "type": "Microsoft.Storage/storageAccounts",
       "name": "[variables('storageAccountName')]",
       "location": "[resourceGroup().location]",
@@ -281,7 +281,7 @@
       }
     },
     {
-       "apiVersion": "2017-03-01",
+      "apiVersion": "2016-06-01",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "gw-nic",
       "location": "[resourceGroup().location]",
@@ -321,7 +321,7 @@
       }
     },
     {
-       "apiVersion": "2017-03-01",
+      "apiVersion": "2016-06-01",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "cb-nic",
       "location": "[resourceGroup().location]",
@@ -351,7 +351,7 @@
       }
     },
     {
-      "apiVersion": "2017-03-01",
+      "apiVersion": "2016-06-01",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[concat('rdsh-', copyindex(), '-nic')]",
       "location": "[resourceGroup().location]",
