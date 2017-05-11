@@ -115,7 +115,7 @@
   },
   "resources": [
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIpRef')]",
       "location": "[resourceGroup().location]",
@@ -127,7 +127,7 @@
       }
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('gatewayIpRef')]",
       "location": "[resourceGroup().location]",
@@ -139,7 +139,7 @@
       }
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('brokerIpRef')]",
       "location": "[resourceGroup().location]",
@@ -151,7 +151,7 @@
       }
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Storage/storageAccounts",
       "name": "[variables('storageAccountName')]",
       "location": "[resourceGroup().location]",
@@ -160,25 +160,25 @@
       }
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "gw-availabilityset",
       "location": "[resourceGroup().location]"
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "cb-availabilityset",
       "location": "[resourceGroup().location]"
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Compute/availabilitySets",
       "name": "rdsh-availabilityset",
       "location": "[resourceGroup().location]"
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Network/loadBalancers",
       "name": "loadBalancer",
       "location": "[resourceGroup().location]",
@@ -281,7 +281,7 @@
       }
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "gw-nic",
       "location": "[resourceGroup().location]",
@@ -321,7 +321,7 @@
       }
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "cb-nic",
       "location": "[resourceGroup().location]",
@@ -351,7 +351,7 @@
       }
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[concat('rdsh-', copyindex(), '-nic')]",
       "location": "[resourceGroup().location]",
@@ -382,7 +382,7 @@
       }
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "gw-vm",
       "location": "[resourceGroup().location]",
@@ -457,7 +457,7 @@
                 },
                 {
                   "Name": "NodeConfigurationName",
-                  "Value": "EEInstalliiS.localhost",
+                  "Value": "EEJoinProdDomain.localhost",
                   "TypeName": "System.String"
                 },
                 {
@@ -500,13 +500,13 @@
             "protectedSettings": {}
           },
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', 'gw-vm')]"
           ]
         }
       ]
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[concat('rdsh-', copyindex())]",
       "location": "[resourceGroup().location]",
@@ -559,7 +559,7 @@
       "resources": [
         {
           "type": "Microsoft.Compute/virtualMachines/extensions",
-          "name": "[concat('rdsh-', copyindex())/Microsoft.Powershell.DSC]",
+          "name": "rdsh/Microsoft.Powershell.DSC",
           "apiVersion": "2016-04-30-preview",
           "location": "[resourceGroup().location]",
           "tags": {
@@ -586,7 +586,7 @@
                 },
                 {
                   "Name": "NodeConfigurationName",
-                  "Value": "EEInstalliiS.localhost",
+                  "Value": "EEJoinProdDomain.localhost",
                   "TypeName": "System.String"
                 },
                 {
@@ -628,14 +628,12 @@
             },
             "protectedSettings": {}
           },
-          "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
-          ]
-        }
+          "dependsOn": "[concat('Microsoft.Compute/virtualMachines','rdsh-', copyindex())]"
+          }
       ]
     },
     {
-      "apiVersion": "2015-06-15",
+      "apiVersion": "2016-04-30-preview",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "cb-vm",
       "location": "[resourceGroup().location]",
@@ -712,7 +710,7 @@
                 },
                 {
                   "Name": "NodeConfigurationName",
-                  "Value": "EEInstalliiS.localhost",
+                  "Value": "EEJoinProdDomain.localhost",
                   "TypeName": "System.String"
                 },
                 {
@@ -755,7 +753,7 @@
             "protectedSettings": {}
           },
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+            "[resourceId('Microsoft.Compute/virtualMachines', 'cb-vm')]"
           ]
         }
       ]
