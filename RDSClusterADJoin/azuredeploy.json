@@ -82,17 +82,6 @@
       "metadata": {
         "description": "DSC configuration function to call. Should contain filename and function in format fileName.ps1\\configurationfunction"
       }
-    },
-    "testType": {
-      "type": "string",
-      "defaultValue": "Standard_LRS",
-      "allowedValues": [
-        "Standard_LRS",
-        "Standard_ZRS",
-        "Standard_GRS",
-        "Standard_RAGRS",
-        "Premium_LRS"
-      ]
     }
   },
   "variables": {
@@ -621,7 +610,7 @@
       "resources": [
         {
           "type": "Microsoft.Compute/virtualMachines/extensions",
-          "name": "[concat('rdsh-', copyindex(), 'Microsoft.Powershell.DSC')]",
+          "name": "[concat('rdsh-', copyindex(), '/Microsoft.Powershell.DSC')]",
           "apiVersion": "2016-04-30-preview",
           "location": "[resourceGroup().location]",
           "tags": {
