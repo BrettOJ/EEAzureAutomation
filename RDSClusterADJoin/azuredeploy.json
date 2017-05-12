@@ -109,13 +109,44 @@
     "brokerIpRef": "brokerpublicIp",
     "gatewayIpRef": "gatewaypublicIp",
     "assetLocation": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/RDSClusterADJoin/",
-    "rds-vNetPrefix": "10.0.0.0/16",
+    "rds-vNetPrefix": "10.1.0.0/16",
     "rds-vNetSubnet1Name": "Subnet-1",
-    "rds-vNetSubnet1Prefix": "10.0.0.0/24",
+    "rds-vNetSubnet1Prefix": "10.1.0.0/24",
     "rds-vNetSubnet2Name": "Subnet-2",
-    "rds-vNetSubnet2Prefix": "10.0.1.0/24"
+    "rds-vNetSubnet2Prefix": "10.1.1.0/24"
   },
   "resources": [
+    {
+      "name": "rds-vNet",
+      "type": "Microsoft.Network/virtualNetworks",
+      "location": "[resourceGroup().location]",
+      "apiVersion": "2016-03-30",
+      "dependsOn": [],
+      "tags": {
+        "displayName": "rds-vNet"
+      },
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('rds-vNetPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('rds-vNetSubnet1Name')]",
+            "properties": {
+              "addressPrefix": "[variables('rds-vNetSubnet1Prefix')]"
+            }
+          },
+          {
+            "name": "[variables('rds-vNetSubnet2Name')]",
+            "properties": {
+              "addressPrefix": "[variables('rds-vNetSubnet2Prefix')]"
+            }
+          }
+        ]
+      }
+    },
     {
       "apiVersion": "2017-03-01",
       "type": "Microsoft.Network/publicIPAddresses",
@@ -590,7 +621,7 @@
       "resources": [
         {
           "type": "Microsoft.Compute/virtualMachines/extensions",
-          "name": "rdsh/Microsoft.Powershell.DSC",
+          "name": "[concat('rdsh-', copyindex(), 'Microsoft.Powershell.DSC')]",
           "apiVersion": "2016-04-30-preview",
           "location": "[resourceGroup().location]",
           "tags": {
@@ -790,38 +821,6 @@
           ]
         }
       ]
-    },
-    {
-      "name": "rds-vNet",
-      "type": "Microsoft.Network/virtualNetworks",
-      "location": "[resourceGroup().location]",
-      "apiVersion": "2016-03-30",
-      "dependsOn": [ ],
-      "tags": {
-        "displayName": "rds-vNet"
-      },
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[variables('rds-vNetPrefix')]"
-          ]
-        },
-        "subnets": [
-          {
-            "name": "[variables('rds-vNetSubnet1Name')]",
-            "properties": {
-              "addressPrefix": "[variables('rds-vNetSubnet1Prefix')]"
-            }
-          },
-          {
-            "name": "[variables('rds-vNetSubnet2Name')]",
-            "properties": {
-              "addressPrefix": "[variables('rds-vNetSubnet2Prefix')]"
-            }
-          }
-        ]
-      }
     }
-
   ]
 }
