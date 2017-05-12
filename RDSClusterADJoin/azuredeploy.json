@@ -82,6 +82,12 @@
       "metadata": {
         "description": "DSC configuration function to call. Should contain filename and function in format fileName.ps1\\configurationfunction"
       }
+    },
+    "_artifactsLocation": {
+      "type": "string"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring"
     }
   },
   "variables": {
@@ -102,7 +108,9 @@
     "rds-vNetSubnet1Name": "Subnet-1",
     "rds-vNetSubnet1Prefix": "10.1.0.0/24",
     "rds-vNetSubnet2Name": "Subnet-2",
-    "rds-vNetSubnet2Prefix": "10.1.1.0/24"
+    "rds-vNetSubnet2Prefix": "10.1.1.0/24",
+    "advNetName": "adVNET",
+    "adVNetID": "[concat(resourceId('Microsoft.Network/virtualNetworks','adVNET'))]"
   },
   "resources": [
     {
@@ -134,7 +142,49 @@
             }
           }
         ]
-      }
+      },
+      "resources": [
+        {
+          "apiVersion": "2016-06-01",
+          "type": "virtualNetworkPeerings",
+          "name": "rds-vNet.peeringName",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[concat('Microsoft.Network/virtualNetworks/', 'rds-vNet')]",
+            "[concat('Microsoft.Network/virtualNetworks/', variables('advNetName'))]"
+          ],
+          "comments": "This is the peering from rds-vNet to advNet",
+          "properties": {
+            "allowVirtualNetworkAccess": "true",
+            "allowForwardedTraffic": "false",
+            "allowGatewayTransit": "false",
+            "useRemoteGateways": "false",
+            "remoteVirtualNetwork": {
+              "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('advNetName'))]"
+            }
+          }
+        },
+        {
+          "apiVersion": "2016-06-01",
+          "type": "virtualNetworkPeerings",
+          "name": "[variables('advNetName').peeringName]",
+          "location": "[resourceGroup().location]",
+          "dependsOn": [
+            "[concat('Microsoft.Network/virtualNetworks/', 'rds-vNet')]",
+            "[concat('Microsoft.Network/virtualNetworks/', variables('advNetName'))]"
+          ],
+          "comments": "This is the peering from adVNET to rds-vNet",
+          "properties": {
+            "allowVirtualNetworkAccess": "true",
+            "allowForwardedTraffic": "false",
+            "allowGatewayTransit": "false",
+            "useRemoteGateways": "false",
+            "remoteVirtualNetwork": {
+              "id": "[resourceId('Microsoft.Network/virtualNetworks','rds-vNet')]"
+            }
+          }
+        }
+      ]
     },
     {
       "apiVersion": "2017-03-01",
