@@ -13,14 +13,28 @@
       "metadata": {
         "description": "The name of the AD domain. For example contoso.com"
       },
-      "defaultValue": "corp.net.au"
+      "defaultValue": "contoso.com"
+    },
+    "adVnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "The vnet name of AD domain. For example johnvnet1"
+      },
+      "defaultValue": "[concat('ADVNET',resourceGroup().name)]"
+    },
+    "adSubnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "The subnet name of AD domain. For example johnsubnet1"
+      },
+      "defaultValue": "[concat('ADStaticSubnet',resourceGroup().name)]"
     },
     "adminUsername": {
       "type": "string",
       "metadata": {
         "description": "The name of the administrator of the new VM and the domain. Exclusion list: 'administrator'. For example johnadmin"
       },
-      "defaultValue": "bojadmin"
+      "defaultValue": "vmadmin"
     },
     "adminPassword": {
       "type": "securestring",
@@ -68,20 +82,6 @@
         "description": "The size of the RDSH VMs"
       },
       "defaultValue": "Standard_A4"
-    },
-    "modulesUrl": {
-      "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/RDSClusterADJoin/UpdateLCMforAAPull.zip",
-      "metadata": {
-        "description": "URL for the DSC configuration package. NOTE: Can be a Github url(raw) to the zip file (this is the default value)"
-      }
-    },
-    "configurationFunction": {
-      "type": "string",
-      "defaultValue": "UpdateLCMforAAPull.ps1\\ConfigureLCMforAAPull",
-      "metadata": {
-        "description": "DSC configuration function to call. Should contain filename and function in format fileName.ps1\\configurationfunction"
-      }
     }
   },
   "variables": {
@@ -93,95 +93,15 @@
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
     "dnsServerPrivateIp": "10.0.0.4",
-    "subnet-id": "[concat(resourceId('Microsoft.Network/virtualNetworks','rds-vNet'),'/subnets/',variables('rds-vNetSubnet1Name'))]",
+    "subnet-id": "[concat(resourceId('Microsoft.Network/virtualNetworks',parameters('adVnetName')),'/subnets/',parameters('adSubnetName'))]",
     "publicIpRef": "publicIp",
     "brokerIpRef": "brokerpublicIp",
     "gatewayIpRef": "gatewaypublicIp",
-    "assetLocation": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/RDSClusterADJoin/",
-    "rds-vNetPrefix": "10.1.0.0/16",
-    "rds-vNetSubnet1Name": "Subnet-1",
-    "rds-vNetSubnet1Prefix": "10.1.0.0/24",
-    "rds-vNetSubnet2Name": "Subnet-2",
-    "rds-vNetSubnet2Prefix": "10.1.1.0/24",
-    "advNetName": "adVNET",
-    "adVNetID": "[concat(resourceId('Microsoft.Network/virtualNetworks','adVNET'))]"
+    "assetLocation": "https://raw.githubusercontent.com/Azure/azure-QuickStart-Templates/master/rds-deployment/"
   },
   "resources": [
     {
-      "name": "rds-vNet",
-      "type": "Microsoft.Network/virtualNetworks",
-      "location": "[resourceGroup().location]",
-      "apiVersion": "2016-03-30",
-      "dependsOn": [],
-      "tags": {
-        "displayName": "rds-vNet"
-      },
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[variables('rds-vNetPrefix')]"
-          ]
-        },
-        "subnets": [
-          {
-            "name": "[variables('rds-vNetSubnet1Name')]",
-            "properties": {
-              "addressPrefix": "[variables('rds-vNetSubnet1Prefix')]"
-            }
-          },
-          {
-            "name": "[variables('rds-vNetSubnet2Name')]",
-            "properties": {
-              "addressPrefix": "[variables('rds-vNetSubnet2Prefix')]"
-            }
-          }
-        ]
-      },
-      "resources": [
-        {
-          "apiVersion": "2016-06-01",
-          "type": "virtualNetworkPeerings",
-          "name": "rds-vNet.peeringName",
-          "location": "[resourceGroup().location]",
-          "dependsOn": [
-            "[concat('Microsoft.Network/virtualNetworks/', 'rds-vNet')]",
-            "[concat('Microsoft.Network/virtualNetworks/', variables('advNetName'))]"
-          ],
-          "comments": "This is the peering from rds-vNet to advNet",
-          "properties": {
-            "allowVirtualNetworkAccess": "true",
-            "allowForwardedTraffic": "false",
-            "allowGatewayTransit": "false",
-            "useRemoteGateways": "false",
-            "remoteVirtualNetwork": {
-              "id": "[resourceId('Microsoft.Network/virtualNetworks',variables('advNetName'))]"
-            }
-          }
-        },
-        {
-          "apiVersion": "2016-06-01",
-          "type": "virtualNetworkPeerings",
-          "name": "ad-vNet.peeringName",
-          "location": "[resourceGroup().location]",
-          "dependsOn": [
-            "[concat('Microsoft.Network/virtualNetworks/', 'rds-vNet')]",
-            "[concat('Microsoft.Network/virtualNetworks/', variables('advNetName'))]"
-          ],
-          "comments": "This is the peering from adVNET to rds-vNet",
-          "properties": {
-            "allowVirtualNetworkAccess": "true",
-            "allowForwardedTraffic": "false",
-            "allowGatewayTransit": "false",
-            "useRemoteGateways": "false",
-            "remoteVirtualNetwork": {
-              "id": "[resourceId('Microsoft.Network/virtualNetworks','rds-vNet')]"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "apiVersion": "2017-03-01",
+      "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('publicIpRef')]",
       "location": "[resourceGroup().location]",
@@ -193,7 +113,7 @@
       }
     },
     {
-      "apiVersion": "2017-03-01",
+      "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('gatewayIpRef')]",
       "location": "[resourceGroup().location]",
@@ -205,7 +125,7 @@
       }
     },
     {
-      "apiVersion": "2015-05-01-preview",
+      "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[variables('brokerIpRef')]",
       "location": "[resourceGroup().location]",
@@ -217,63 +137,34 @@
       }
     },
     {
-      "name": "[variables('storageAccountName')]",
+      "apiVersion": "2015-06-15",
       "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('storageAccountName')]",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2016-01-01",
-      "sku": {
-        "name": "[variables('storageAccountType')]"
-      },
-      "dependsOn": [],
-      "tags": {
-        "displayName": "StorageAccount"
-      },
-      "kind": "Storage"
+      "properties": {
+        "accountType": "[variables('storageAccountType')]"
+      }
     },
     {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/availabilitySets",
       "name": "gw-availabilityset",
-      "type": "Microsoft.Compute/availabilitySets",
-      "location": "[resourceGroup().location]",
-      "apiVersion": "2015-06-15",
-      "dependsOn": [],
-      "tags": {
-        "displayName": "gw-availabilityset"
-      },
-      "properties": {
-        "platformUpdateDomainCount": 1,
-        "platformFaultDomainCount": 1
-      }
+      "location": "[resourceGroup().location]"
     },
     {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/availabilitySets",
       "name": "cb-availabilityset",
-      "type": "Microsoft.Compute/availabilitySets",
-      "location": "[resourceGroup().location]",
-      "apiVersion": "2015-06-15",
-      "dependsOn": [],
-      "tags": {
-        "displayName": "cb-availabilityset"
-      },
-      "properties": {
-        "platformUpdateDomainCount": 1,
-        "platformFaultDomainCount": 1
-      }
+      "location": "[resourceGroup().location]"
     },
     {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/availabilitySets",
       "name": "rdsh-availabilityset",
-      "type": "Microsoft.Compute/availabilitySets",
-      "location": "[resourceGroup().location]",
-      "apiVersion": "2015-06-15",
-      "dependsOn": [],
-      "tags": {
-        "displayName": "rdsh-availabilityset"
-      },
-      "properties": {
-        "platformUpdateDomainCount": 1,
-        "platformFaultDomainCount": 1
-      }
+      "location": "[resourceGroup().location]"
     },
     {
-      "apiVersion": "2017-03-01",
+      "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/loadBalancers",
       "name": "loadBalancer",
       "location": "[resourceGroup().location]",
@@ -376,7 +267,7 @@
       }
     },
     {
-      "apiVersion": "2016-06-01",
+      "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "gw-nic",
       "location": "[resourceGroup().location]",
@@ -416,7 +307,7 @@
       }
     },
     {
-      "apiVersion": "2016-06-01",
+      "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "cb-nic",
       "location": "[resourceGroup().location]",
@@ -446,7 +337,7 @@
       }
     },
     {
-      "apiVersion": "2016-06-01",
+      "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[concat('rdsh-', copyindex(), '-nic')]",
       "location": "[resourceGroup().location]",
@@ -477,7 +368,7 @@
       }
     },
     {
-      "apiVersion": "2016-04-30-preview",
+      "apiVersion": "2015-06-15",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "gw-vm",
       "location": "[resourceGroup().location]",
@@ -524,84 +415,40 @@
       },
       "resources": [
         {
+          "apiVersion": "2015-06-15",
           "type": "Microsoft.Compute/virtualMachines/extensions",
-          "name": "gw-vm/Microsoft.Powershell.DSC",
-          "apiVersion": "2016-04-30-preview",
+          "name": "gw-vm/gateway",
           "location": "[resourceGroup().location]",
-          "tags": {
-            "AutomationAccountARMID": "subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/EEAutomationRG/providers/Microsoft.Automation/automationAccounts/EEAutomation"
-          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Compute/virtualMachines', 'gw-vm')]"
+          ],
           "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
-            "typeHandlerVersion": "2.22",
-            "autoUpgradeMinorVersion": false,
+            "typeHandlerVersion": "2.11",
+            "autoUpgradeMinorVersion": true,
             "settings": {
-              "ModulesUrl": "[parameters('modulesUrl')]",
-              "ConfigurationFunction": "[parameters('configurationFunction')]",
-              "Properties": [
-                {
-                  "Name": "RegistrationKey",
-                  "Value": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "RegistrationUrl",
-                  "Value": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "NodeConfigurationName",
-                  "Value": "EEJoinProdDomain.localhost",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "ConfigurationMode",
-                  "Value": "applyAndMonitor",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "ConfigurationModeFrequencyMins",
-                  "Value": "15",
-                  "TypeName": "System.Int32"
-                },
-                {
-                  "Name": "RefreshFrequencyMins",
-                  "Value": "30",
-                  "TypeName": "System.Int32"
-                },
-                {
-                  "Name": "RebootNodeIfNeeded",
-                  "Value": false,
-                  "TypeName": "System.Boolean"
-                },
-                {
-                  "Name": "ActionAfterReboot",
-                  "Value": "continueConfiguration",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "AllowModuleOverwrite",
-                  "Value": false,
-                  "TypeName": "System.Boolean"
-                },
-                {
-                  "Name": "Timestamp",
-                  "Value": "7/05/2017 1:28:18 AM",
-                  "TypeName": "System.String"
+              "ModulesUrl": "[concat(variables('assetLocation'),'/Configuration.zip')]",
+              "ConfigurationFunction": "Configuration.ps1\\Gateway",
+              "Properties": {
+                "DomainName": "[parameters('adDomainName')]",
+                "AdminCreds": {
+                  "UserName": "[parameters('adminUsername')]",
+                  "Password": "PrivateSettingsRef:AdminPassword"
                 }
-              ]
+              }
             },
-            "protectedSettings": {}
-          },
-          "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', 'gw-vm')]"
-          ]
+            "protectedSettings": {
+              "Items": {
+                "AdminPassword": "[parameters('adminPassword')]"
+              }
+            }
+          }
         }
       ]
     },
     {
-      "apiVersion": "2016-04-30-preview",
+      "apiVersion": "2015-06-15",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[concat('rdsh-', copyindex())]",
       "location": "[resourceGroup().location]",
@@ -653,84 +500,40 @@
       },
       "resources": [
         {
+          "apiVersion": "2015-06-15",
           "type": "Microsoft.Compute/virtualMachines/extensions",
-          "name": "[concat('rdsh-', copyindex(), '/Microsoft.Powershell.DSC')]",
-          "apiVersion": "2016-04-30-preview",
+          "name": "[concat('rdsh-', copyindex(),'/sessionhost')]",
           "location": "[resourceGroup().location]",
-          "tags": {
-            "AutomationAccountARMID": "subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/EEAutomationRG/providers/Microsoft.Automation/automationAccounts/EEAutomation"
-          },
+          "dependsOn": [
+            "[resourceId('Microsoft.Compute/virtualMachines', concat('rdsh-', copyindex()))]"
+          ],
           "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
-            "typeHandlerVersion": "2.22",
-            "autoUpgradeMinorVersion": false,
+            "typeHandlerVersion": "2.11",
+            "autoUpgradeMinorVersion": true,
             "settings": {
-              "ModulesUrl": "[parameters('modulesUrl')]",
-              "ConfigurationFunction": "[parameters('configurationFunction')]",
-              "Properties": [
-                {
-                  "Name": "RegistrationKey",
-                  "Value": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "RegistrationUrl",
-                  "Value": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "NodeConfigurationName",
-                  "Value": "EEJoinProdDomain.localhost",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "ConfigurationMode",
-                  "Value": "applyAndMonitor",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "ConfigurationModeFrequencyMins",
-                  "Value": "15",
-                  "TypeName": "System.Int32"
-                },
-                {
-                  "Name": "RefreshFrequencyMins",
-                  "Value": "30",
-                  "TypeName": "System.Int32"
-                },
-                {
-                  "Name": "RebootNodeIfNeeded",
-                  "Value": false,
-                  "TypeName": "System.Boolean"
-                },
-                {
-                  "Name": "ActionAfterReboot",
-                  "Value": "continueConfiguration",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "AllowModuleOverwrite",
-                  "Value": false,
-                  "TypeName": "System.Boolean"
-                },
-                {
-                  "Name": "Timestamp",
-                  "Value": "7/05/2017 1:28:18 AM",
-                  "TypeName": "System.String"
+              "ModulesUrl": "[concat(variables('assetLocation'),'/Configuration.zip')]",
+              "ConfigurationFunction": "Configuration.ps1\\SessionHost",
+              "Properties": {
+                "DomainName": "[parameters('adDomainName')]",
+                "AdminCreds": {
+                  "UserName": "[parameters('adminUsername')]",
+                  "Password": "PrivateSettingsRef:AdminPassword"
                 }
-              ]
+              }
             },
-            "protectedSettings": {}
-          },
-          "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', 'rdsh-', copyindex())]"
-          ]
+            "protectedSettings": {
+              "Items": {
+                "AdminPassword": "[parameters('adminPassword')]"
+              }
+            }
+          }
         }
       ]
     },
     {
-      "apiVersion": "2016-04-30-preview",
+      "apiVersion": "2015-06-15",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "cb-vm",
       "location": "[resourceGroup().location]",
@@ -775,85 +578,45 @@
             }
           ]
         }
-
-      },
-      "resources": [
-        {
-          "type": "Microsoft.Compute/virtualMachines/extensions",
-          "name": "cb-vm/Microsoft.Powershell.DSC",
-          "apiVersion": "2016-04-30-preview",
-          "location": "[resourceGroup().location]",
-          "tags": {
-            "AutomationAccountARMID": "subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/EEAutomationRG/providers/Microsoft.Automation/automationAccounts/EEAutomation"
-          },
-          "properties": {
-            "publisher": "Microsoft.Powershell",
-            "type": "DSC",
-            "typeHandlerVersion": "2.22",
-            "autoUpgradeMinorVersion": false,
-            "settings": {
-              "ModulesUrl": "[parameters('modulesUrl')]",
-              "ConfigurationFunction": "[parameters('configurationFunction')]",
-              "Properties": [
-                {
-                  "Name": "RegistrationKey",
-                  "Value": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "RegistrationUrl",
-                  "Value": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "NodeConfigurationName",
-                  "Value": "EEJoinProdDomain.localhost",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "ConfigurationMode",
-                  "Value": "applyAndMonitor",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "ConfigurationModeFrequencyMins",
-                  "Value": "15",
-                  "TypeName": "System.Int32"
-                },
-                {
-                  "Name": "RefreshFrequencyMins",
-                  "Value": "30",
-                  "TypeName": "System.Int32"
-                },
-                {
-                  "Name": "RebootNodeIfNeeded",
-                  "Value": false,
-                  "TypeName": "System.Boolean"
-                },
-                {
-                  "Name": "ActionAfterReboot",
-                  "Value": "continueConfiguration",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "AllowModuleOverwrite",
-                  "Value": false,
-                  "TypeName": "System.Boolean"
-                },
-                {
-                  "Name": "Timestamp",
-                  "Value": "7/05/2017 1:28:18 AM",
-                  "TypeName": "System.String"
-                }
-              ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "cb-vm/rdsdeployment",
+      "apiVersion": "2015-06-15",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines', 'cb-vm')]",
+        "Microsoft.Compute/virtualMachines/gw-vm/extensions/gateway",
+        "rdsh-vm-loop"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.11",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "ModulesUrl": "[concat(variables('assetLocation'),'/Configuration.zip')]",
+          "ConfigurationFunction": "Configuration.ps1\\RDSDeployment",
+          "Properties": {
+            "adminCreds": {
+              "UserName": "[parameters('adminUsername')]",
+              "Password": "PrivateSettingsRef:adminPassword"
             },
-            "protectedSettings": {}
-          },
-          "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', 'cb-vm')]"
-          ]
+            "connectionBroker": "[concat('broker.',parameters('adDomainName'))]",
+            "domainName": "[parameters('adDomainName')]",
+            "externalfqdn": "[concat('gateway.',parameters('adDomainName'))]",
+            "numberOfRdshInstances": "[parameters('numberOfRdshInstances')]",
+            "sessionHostNamingPrefix": "rdsh-",
+            "webAccessServer": "[concat('gateway.',parameters('adDomainName'))]"
+          }
+        },
+        "protectedSettings": {
+          "Items": {
+            "adminPassword": "[parameters('adminPassword')]"
+          }
         }
-      ]
+      }
     }
   ]
 }
