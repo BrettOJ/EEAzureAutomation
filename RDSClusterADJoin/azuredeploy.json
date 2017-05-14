@@ -22,13 +22,6 @@
       },
       "defaultValue": "advnet"
     },
-    "adSubnetName": {
-      "type": "string",
-      "metadata": {
-        "description": "The subnet name of AD domain. For example johnsubnet1"
-      },
-      "defaultValue": "[concat('ADStaticSubnet',resourceGroup().name)]"
-    },
     "adminUsername": {
       "type": "string",
       "metadata": {
