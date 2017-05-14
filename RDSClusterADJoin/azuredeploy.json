@@ -161,7 +161,7 @@
         {
           "apiVersion": "2016-06-01",
           "type": "virtualNetworkPeerings",
-          "name": "[variables('advNetName').peeringName]",
+          "name": "ad-vNet.peeringName",
           "location": "[resourceGroup().location]",
           "dependsOn": [
             "[concat('Microsoft.Network/virtualNetworks/', 'rds-vNet')]",
