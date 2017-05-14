@@ -106,7 +106,7 @@
     "uniqueStorageAccountContainerName": "[concat('sac', resourceGroup().name)]",
     "imagePublisher": "MicrosoftWindowsServer",
     "imageOffer": "WindowsServer",
-    "dnsServerPrivateIp": "10.0.0.4",
+    "dnsServerPrivateIp": "10.1.0.4",
     "subnet-id": "[concat(resourceId('Microsoft.Network/virtualNetworks','rds-vNet'),'/subnets/',variables('rds-vNetSubnet1Name'))]",
     "rds-vNetPrefix": "10.1.0.0/16",
     "rds-vNetSubnet1Name": "Subnet-1",
