@@ -13,14 +13,14 @@
       "metadata": {
         "description": "The name of the AD domain. For example contoso.com"
       },
-      "defaultValue": "contoso.com"
+      "defaultValue": "corp.net.au"
     },
     "adVnetName": {
       "type": "string",
       "metadata": {
         "description": "The vnet name of AD domain. For example johnvnet1"
       },
-      "defaultValue": "[concat('ADVNET',resourceGroup().name)]"
+      "defaultValue": "advnet"
     },
     "adSubnetName": {
       "type": "string",
@@ -34,7 +34,7 @@
       "metadata": {
         "description": "The name of the administrator of the new VM and the domain. Exclusion list: 'administrator'. For example johnadmin"
       },
-      "defaultValue": "vmadmin"
+      "defaultValue": "bojadmin"
     },
     "adminPassword": {
       "type": "securestring",
