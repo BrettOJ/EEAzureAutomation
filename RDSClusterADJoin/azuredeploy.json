@@ -343,7 +343,7 @@
           ],
           "dnsSettings": {
             "dnsServers": [
-              "[variables('dnsServerPrivateIp')]"
+              "AzureProvidedDNS"
             ]
           }
         }
@@ -373,7 +373,7 @@
           ],
           "dnsSettings": {
             "dnsServers": [
-              "[variables('dnsServerPrivateIp')]"
+              "AzureProvidedDNS"
             ]
           }
         }
@@ -404,7 +404,7 @@
           ],
           "dnsSettings": {
             "dnsServers": [
-              "[variables('dnsServerPrivateIp')]"
+              "AzureProvidedDNS"
             ]
           }
         }
