@@ -86,7 +86,7 @@
       "type": "string",
       "defaultValue": "UpdateLCMforAAPull.ps1\\ConfigureLCMforAAPull",
       "metadata": {
-        "description": "DSC configuration function to call. Should contain filename and function in format fileName.ps1\\configurationfunction"
+        "description": "DSC configuration function to call. Should contain filename and function in the format fileName.ps1\\configurationfunction"
       }
     }
   },
