@@ -340,12 +340,7 @@
                 ]
               }
             }
-          ],
-          "dnsSettings": {
-            "dnsServers": [
-              "AzureProvidedDNS"
-            ]
-          }
+          ]
         }
       },
       {
@@ -370,12 +365,7 @@
                 }
               }
             }
-          ],
-          "dnsSettings": {
-            "dnsServers": [
-              "AzureProvidedDNS"
-            ]
-          }
+          ]
         }
       },
       {
@@ -401,12 +391,7 @@
                 }
               }
             }
-          ],
-          "dnsSettings": {
-            "dnsServers": [
-              "AzureProvidedDNS"
-            ]
-          }
+          ]
         }
       },
       {
