@@ -100,6 +100,7 @@
     "imageOffer": "WindowsServer",
     "dnsServerPrivateIp": "10.1.0.4",
     "subnet-id": "[concat(resourceId('Microsoft.Network/virtualNetworks','rds-vNet'),'/subnets/',variables('rds-vNetSubnet1Name'))]",
+    "vNetPeer-id": "[concat('/subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/', resourceGroup().name,'/providers/Microsoft.Network/virtualNetworks/rds-vNet')]",
     "rds-vNetPrefix": "10.1.0.0/16",
     "rds-vNetSubnet1Name": "Subnet-1",
     "rds-vNetSubnet1Prefix": "10.1.0.0/24",
@@ -126,6 +127,12 @@
             "[variables('rds-vNetPrefix')]"
           ]
         },
+        "dhcpOptions": {
+          "dnsServers": [
+            "10.0.0.4",
+            "168.63.129.16"
+          ]
+        },
         "subnets": [
           {
             "name": "[variables('rds-vNetSubnet1Name')]",
@@ -139,21 +146,55 @@
               "addressPrefix": "[variables('rds-vNetSubnet2Prefix')]"
             }
           }
+        ],
+        "virtualNetworkPeerings": [
+          {
+            "id": "[variables('vNetPeer-id')]",
+            "properties": {
+              "allowVirtualNetworkAccess": "True",
+              "allowForwardedTraffic": "False",
+              "allowGatewayTransit": "False",
+              "useRemoteGateways": "False",
+              "remoteVirtualNetwork": {
+                "id": "/subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/EECorpDomain/providers/Microsoft.Network/virtualNetworks/adVNET"
+              },
+              "peeringState": "Connected"
+            },
+            "name": "vNetPeer2adVnet"
+          }
         ]
-      }
-    },
-    {
-      "apiVersion": "2015-06-15",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[variables('publicIpRef')]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "publicIPAllocationMethod": "Dynamic",
-        "dnsSettings": {
-          "domainNameLabel": "[parameters('dnsLabelPrefix')]"
+      },
+      "resources": [
+        {
+          "name": "vNetPeerRDSVnet",
+          "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+          "apiVersion": "2016-09-01",
+          "properties": {
+            "allowVirtualNetworkAccess": "boolean",
+            "allowForwardedTraffic": "boolean",
+            "allowGatewayTransit": "boolean",
+            "useRemoteGateways": "boolean",
+            "remoteVirtualNetwork": {
+              "id": "[variables('vNetPeer-id')]"
+            },
+            "peeringState": "string"
+          }
         }
-      }
+      ]
     },
+      {
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "name": "[variables('publicIpRef')]",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "publicIPAllocationMethod": "Dynamic",
+          "dnsSettings": {
+            "domainNameLabel": "[parameters('dnsLabelPrefix')]"
+          }
+        }
+      },
+
       {
         "apiVersion": "2015-06-15",
         "type": "Microsoft.Network/publicIPAddresses",
@@ -647,132 +688,132 @@
           }
         ]
       },
-    {
-      "apiVersion": "2016-04-30-preview",
-      "type": "Microsoft.Compute/virtualMachines",
-      "name": "cb-vm",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-        "[resourceId('Microsoft.Compute/availabilitySets', 'cb-availabilityset')]",
-        "Microsoft.Network/networkInterfaces/cb-nic",
-        "rdsh-vm-loop"
-      ],
-      "properties": {
-        "hardwareProfile": {
-          "vmSize": "Standard_A2"
-        },
-        "availabilitySet": {
-          "id": "[resourceId('Microsoft.Compute/availabilitySets', 'cb-availabilityset')]"
-        },
-        "osProfile": {
-          "computerName": "broker",
-          "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPassword')]"
-        },
-        "storageProfile": {
-          "imageReference": {
-            "publisher": "[variables('imagePublisher')]",
-            "offer": "[variables('imageOffer')]",
-            "sku": "[parameters('imageSKU')]",
-            "version": "latest"
+      {
+        "apiVersion": "2016-04-30-preview",
+        "type": "Microsoft.Compute/virtualMachines",
+        "name": "cb-vm",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+          "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+          "[resourceId('Microsoft.Compute/availabilitySets', 'cb-availabilityset')]",
+          "Microsoft.Network/networkInterfaces/cb-nic",
+          "rdsh-vm-loop"
+        ],
+        "properties": {
+          "hardwareProfile": {
+            "vmSize": "Standard_A2"
           },
-          "osDisk": {
-            "name": "osdisk",
-            "vhd": {
-              "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')),providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob,variables('uniqueStorageAccountContainerName'),'/','cb-vm-os-disk.vhd')]"
+          "availabilitySet": {
+            "id": "[resourceId('Microsoft.Compute/availabilitySets', 'cb-availabilityset')]"
+          },
+          "osProfile": {
+            "computerName": "broker",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]"
+          },
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "[variables('imagePublisher')]",
+              "offer": "[variables('imageOffer')]",
+              "sku": "[parameters('imageSKU')]",
+              "version": "latest"
             },
-            "caching": "ReadWrite",
-            "createOption": "FromImage"
+            "osDisk": {
+              "name": "osdisk",
+              "vhd": {
+                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')),providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob,variables('uniqueStorageAccountContainerName'),'/','cb-vm-os-disk.vhd')]"
+              },
+              "caching": "ReadWrite",
+              "createOption": "FromImage"
+            }
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "[resourceId('Microsoft.Network/networkInterfaces','cb-nic')]"
+              }
+            ]
           }
         },
-        "networkProfile": {
-          "networkInterfaces": [
-            {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces','cb-nic')]"
-            }
-          ]
-        }
-      },
-      "resources": [
-        {
-          "type": "Microsoft.Compute/virtualMachines/extensions",
-          "name": "cb-vm/Microsoft.Powershell.DSC",
-          "apiVersion": "2016-03-30",
-          "location": "[resourceGroup().location]",
-          "tags": {
-            "AutomationAccountARMID": "subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/EEAutomationRG/providers/Microsoft.Automation/automationAccounts/EEAutomation"
-          },
-          "properties": {
-            "publisher": "Microsoft.Powershell",
-            "type": "DSC",
-            "typeHandlerVersion": "2.22",
-            "autoUpgradeMinorVersion": false,
-            "settings": {
-              "ModulesUrl": "[parameters('modulesUrl')]",
-              "ConfigurationFunction": "[parameters('configurationFunction')]",
-              "Properties": [
-                {
-                  "Name": "RegistrationKey",
-                  "Value": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "RegistrationUrl",
-                  "Value": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "NodeConfigurationName",
-                  "Value": "EEJoinProdDomain.localhost",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "ConfigurationMode",
-                  "Value": "applyAndMonitor",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "ConfigurationModeFrequencyMins",
-                  "Value": "15",
-                  "TypeName": "System.Int32"
-                },
-                {
-                  "Name": "RefreshFrequencyMins",
-                  "Value": "30",
-                  "TypeName": "System.Int32"
-                },
-                {
-                  "Name": "RebootNodeIfNeeded",
-                  "Value": false,
-                  "TypeName": "System.Boolean"
-                },
-                {
-                  "Name": "ActionAfterReboot",
-                  "Value": "continueConfiguration",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "AllowModuleOverwrite",
-                  "Value": false,
-                  "TypeName": "System.Boolean"
-                },
-                {
-                  "Name": "Timestamp",
-                  "Value": "7/05/2017 1:28:18 AM",
-                  "TypeName": "System.String"
-                }
-              ]
+        "resources": [
+          {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "cb-vm/Microsoft.Powershell.DSC",
+            "apiVersion": "2016-03-30",
+            "location": "[resourceGroup().location]",
+            "tags": {
+              "AutomationAccountARMID": "subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/EEAutomationRG/providers/Microsoft.Automation/automationAccounts/EEAutomation"
             },
-            "protectedSettings": {}
-          },
-          "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', 'cb-vm')]"
-          ]
-        }
-      ]
-    }
-  ]
+            "properties": {
+              "publisher": "Microsoft.Powershell",
+              "type": "DSC",
+              "typeHandlerVersion": "2.22",
+              "autoUpgradeMinorVersion": false,
+              "settings": {
+                "ModulesUrl": "[parameters('modulesUrl')]",
+                "ConfigurationFunction": "[parameters('configurationFunction')]",
+                "Properties": [
+                  {
+                    "Name": "RegistrationKey",
+                    "Value": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
+                    "TypeName": "System.String"
+                  },
+                  {
+                    "Name": "RegistrationUrl",
+                    "Value": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
+                    "TypeName": "System.String"
+                  },
+                  {
+                    "Name": "NodeConfigurationName",
+                    "Value": "EEJoinProdDomain.localhost",
+                    "TypeName": "System.String"
+                  },
+                  {
+                    "Name": "ConfigurationMode",
+                    "Value": "applyAndMonitor",
+                    "TypeName": "System.String"
+                  },
+                  {
+                    "Name": "ConfigurationModeFrequencyMins",
+                    "Value": "15",
+                    "TypeName": "System.Int32"
+                  },
+                  {
+                    "Name": "RefreshFrequencyMins",
+                    "Value": "30",
+                    "TypeName": "System.Int32"
+                  },
+                  {
+                    "Name": "RebootNodeIfNeeded",
+                    "Value": false,
+                    "TypeName": "System.Boolean"
+                  },
+                  {
+                    "Name": "ActionAfterReboot",
+                    "Value": "continueConfiguration",
+                    "TypeName": "System.String"
+                  },
+                  {
+                    "Name": "AllowModuleOverwrite",
+                    "Value": false,
+                    "TypeName": "System.Boolean"
+                  },
+                  {
+                    "Name": "Timestamp",
+                    "Value": "7/05/2017 1:28:18 AM",
+                    "TypeName": "System.String"
+                  }
+                ]
+              },
+              "protectedSettings": {}
+            },
+            "dependsOn": [
+              "[resourceId('Microsoft.Compute/virtualMachines', 'cb-vm')]"
+            ]
+          }
+        ]
+      }
+    ]
 }
 
    
