@@ -100,7 +100,7 @@
     "imageOffer": "WindowsServer",
     "dnsServerPrivateIp": "10.1.0.4",
     "subnet-id": "[concat(resourceId('Microsoft.Network/virtualNetworks','rds-vNet'),'/subnets/',variables('rds-vNetSubnet1Name'))]",
-    "vNetPeer-id": "[concat('/subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/', resourceGroup().name,'/providers/Microsoft.Network/virtualNetworks/rds-vNet')]",
+    "vNetPeer-id": "[concat(resourceId('Microsoft.Network/virtualNetworks','rds-vNet'))]",
     "rds-vNetPrefix": "10.1.0.0/16",
     "rds-vNetSubnet1Name": "Subnet-1",
     "rds-vNetSubnet1Prefix": "10.1.0.0/24",
