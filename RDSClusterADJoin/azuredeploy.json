@@ -164,7 +164,7 @@
           }
         ]
       },
-      "resources": [
+     "resources": [
         {
           "name": "vNetPeerRDSVnet",
           "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
@@ -175,7 +175,7 @@
             "allowGatewayTransit": "boolean",
             "useRemoteGateways": "boolean",
             "remoteVirtualNetwork": {
-              "id": "[variables('vNetPeer-id')]"
+              "id": "/subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/eerdsclusterrg/providers/Microsoft.Network/virtualNetworks/adVNET"
             },
             "peeringState": "string"
           }
