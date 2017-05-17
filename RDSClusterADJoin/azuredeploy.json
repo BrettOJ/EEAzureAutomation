@@ -11,9 +11,16 @@
     "adDomainName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the AD domain. For example contoso.com"
+        "description": "The name of the AD domain"
       },
       "defaultValue": "corp.net.au"
+    },
+    "adVnetRG": {
+      "type": "string",
+      "metadata": {
+        "description": "The Resource Group name of AD domain"
+      },
+      "defaultValue": "eeCorpDomain"
     },
     "adVnetName": {
       "type": "string",
@@ -81,7 +88,7 @@
       "metadata": {
         "description": "URL for the DSC configuration package. NOTE: Can be a Github url(raw) to the zip file (this is the default value)"
       }
-  },
+    },
     "configurationFunction": {
       "type": "string",
       "defaultValue": "UpdateLCMforAAPull.ps1\\ConfigureLCMforAAPull",
@@ -100,7 +107,8 @@
     "imageOffer": "WindowsServer",
     "dnsServerPrivateIp": "10.1.0.4",
     "subnet-id": "[concat(resourceId('Microsoft.Network/virtualNetworks','rds-vNet'),'/subnets/',variables('rds-vNetSubnet1Name'))]",
-    "vNetPeer-id": "[concat(resourceId('Microsoft.Network/virtualNetworks','rds-vNet'))]",
+    "adVnet-id": "[resourceId(parameters('adVnetRG'), 'Microsoft.Network/virtualNetworks', parameters('adVnetName'))]",
+    "rdsVnet-id": ""
     "rds-vNetPrefix": "10.1.0.0/16",
     "rds-vNetSubnet1Name": "Subnet-1",
     "rds-vNetSubnet1Prefix": "10.1.0.0/24",
@@ -149,21 +157,40 @@
         ],
         "virtualNetworkPeerings": [
           {
-            "id": "[variables('vNetPeer-id')]",
+            "name": "vNetPeer2adVnet",
             "properties": {
               "allowVirtualNetworkAccess": "True",
               "allowForwardedTraffic": "False",
               "allowGatewayTransit": "False",
               "useRemoteGateways": "False",
               "remoteVirtualNetwork": {
-                "id": "/subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/EECorpDomain/providers/Microsoft.Network/virtualNetworks/adVNET"
+                "id": "[Variables('adVnet-id')]"
               },
               "peeringState": "Connected"
-            },
-            "name": "vNetPeer2adVnet"
+            }
           }
         ]
+      },
+     "resources": [
+      {
+        "name": "vNetPeer2RDSVnet",
+        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+        "apiVersion": "2016-09-01",
+        "dependsOn": [
+          "Microsoft.Network/virtualNetworks/rds-vNet"
+        ],
+        "properties": {
+          "allowVirtualNetworkAccess": "True",
+          "allowForwardedTraffic": "False",
+          "allowGatewayTransit": "False",
+          "useRemoteGateways": "False",
+          "remoteVirtualNetwork": {
+            "id": "/subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/eerdsclusterrg/providers/Microsoft.Network/virtualNetworks/rds-vNet"
+          },
+          "peeringState": "Connected"
+        }
       }
+      ]
     },
       {
         "apiVersion": "2015-06-15",
