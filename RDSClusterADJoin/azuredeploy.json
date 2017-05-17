@@ -163,24 +163,7 @@
             "name": "vNetPeer2adVnet"
           }
         ]
-      },
-     "resources": [
-        {
-          "name": "vNetPeerRDSVnet",
-          "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-          "apiVersion": "2016-09-01",
-          "properties": {
-            "allowVirtualNetworkAccess": "boolean",
-            "allowForwardedTraffic": "boolean",
-            "allowGatewayTransit": "boolean",
-            "useRemoteGateways": "boolean",
-            "remoteVirtualNetwork": {
-              "id": "/subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/eerdsclusterrg/providers/Microsoft.Network/virtualNetworks/adVNET"
-            },
-            "peeringState": "string"
-          }
-        }
-      ]
+      }
     },
       {
         "apiVersion": "2015-06-15",
