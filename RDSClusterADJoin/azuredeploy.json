@@ -98,94 +98,22 @@
     }
   },
   "variables": {
-    "adVnet-id": "[resourceId(parameters('adVnetRG'), 'Microsoft.Network/virtualNetworks', parameters('adVnetName'))]",
+    "adVnet-id": "/subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/EECorpDomain/providers/Microsoft.Network/virtualNetworks/adVNET",
     "assetLocation": "https://raw.githubusercontent.com/Azure/azure-QuickStart-Templates/master/rds-deployment/",
     "brokerIpRef": "brokerpublicIp",
     "cbdnsLabelPrefix": "[concat('cbd', resourceGroup().name)]",
-    "dnsServerPrivateIp": "10.1.0.4",
     "gatewayIpRef": "gatewaypublicIp",
     "gwdnsLabelPrefix": "[concat('gwd', resourceGroup().name)]",
     "imageOffer": "WindowsServer",
     "imagePublisher": "MicrosoftWindowsServer",
     "publicIpRef": "publicIp",
-    "rds-vNetPrefix": "10.1.0.0/16",
-    "rds-vNetSubnet1Name": "Subnet-1",
-    "rds-vNetSubnet1Prefix": "10.1.0.0/24",
-    "rds-vNetSubnet2Name": "Subnet-2",
-    "rds-vNetSubnet2Prefix": "10.1.1.0/24",
+    "adVNETSubnet1Name": "adSubnet",
     "storageAccountName": "[tolower(concat('rdsa', uniqueString(resourceGroup().id)))]",
     "storageAccountType": "Standard_LRS",
-    "subnet-id": "[concat(resourceId('Microsoft.Network/virtualNetworks','rds-vNet'),'/subnets/',variables('rds-vNetSubnet1Name'))]",
+    "subnet-id": "[concat(resourceId('Microsoft.Network/virtualNetworks','adVNET'),'/subnets/',variables('adVNETSubnet1Name'))]",
     "uniqueStorageAccountContainerName": "[concat('sac', resourceGroup().name)]"
   },
   "resources": [
-    {
-      "name": "rds-vNet",
-      "type": "Microsoft.Network/virtualNetworks",
-      "location": "[resourceGroup().location]",
-      "apiVersion": "2016-03-30",
-      "dependsOn": [],
-      "tags": {
-        "displayName": "rds-vNet"
-      },
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[variables('rds-vNetPrefix')]"
-          ]
-        },
-        "dhcpOptions": {
-          "dnsServers": [
-            "10.0.0.4",
-            "168.63.129.16"
-          ]
-        },
-        "subnets": [
-          {
-            "name": "[variables('rds-vNetSubnet1Name')]",
-            "properties": {
-              "addressPrefix": "[variables('rds-vNetSubnet1Prefix')]"
-            }
-          },
-          {
-            "name": "[variables('rds-vNetSubnet2Name')]",
-            "properties": {
-              "addressPrefix": "[variables('rds-vNetSubnet2Prefix')]"
-            }
-          }
-        ],
-        "virtualNetworkPeerings": [
-          {
-            "name": "rds-vNet/Peer2adVnet",
-            "properties": {
-              "allowVirtualNetworkAccess": "True",
-              "allowForwardedTraffic": "False",
-              "allowGatewayTransit": "False",
-              "useRemoteGateways": "False",
-              "remoteVirtualNetwork": {
-                "id": "[Variables('adVnet-id')]"
-              },
-              "peeringState": "Connected"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "apiVersion": "2016-06-01",
-      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-      "name": "[concat(resourceId('Microsoft.Network/virtualNetworks', 'adVnet', '/NetPeer'))]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "allowVirtualNetworkAccess": true,
-        "allowForwardedTraffic": false,
-        "allowGatewayTransit": false,
-        "useRemoteGateways": false,
-        "remoteVirtualNetwork": {
-          "id": "[resourceId('Microsoft.Network/virtualNetworks', 'rds-vNet')]"
-        }
-      }
-    },
     {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/publicIPAddresses",
