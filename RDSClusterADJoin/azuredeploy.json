@@ -108,7 +108,6 @@
     "dnsServerPrivateIp": "10.1.0.4",
     "subnet-id": "[concat(resourceId('Microsoft.Network/virtualNetworks','rds-vNet'),'/subnets/',variables('rds-vNetSubnet1Name'))]",
     "adVnet-id": "[resourceId(parameters('adVnetRG'), 'Microsoft.Network/virtualNetworks', parameters('adVnetName'))]",
-    "rdsVnet-id": ""
     "rds-vNetPrefix": "10.1.0.0/16",
     "rds-vNetSubnet1Name": "Subnet-1",
     "rds-vNetSubnet1Prefix": "10.1.0.0/24",
