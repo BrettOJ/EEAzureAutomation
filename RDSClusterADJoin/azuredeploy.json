@@ -98,25 +98,25 @@
     }
   },
   "variables": {
-    "gwdnsLabelPrefix": "[concat('gwd', resourceGroup().name)]",
-    "cbdnsLabelPrefix": "[concat('cbd', resourceGroup().name)]",
-    "storageAccountName": "[tolower(concat('rdsa', uniqueString(resourceGroup().id)))]",
-    "storageAccountType": "Standard_LRS",
-    "uniqueStorageAccountContainerName": "[concat('sac', resourceGroup().name)]",
-    "imagePublisher": "MicrosoftWindowsServer",
-    "imageOffer": "WindowsServer",
-    "dnsServerPrivateIp": "10.1.0.4",
-    "subnet-id": "[concat(resourceId('Microsoft.Network/virtualNetworks','rds-vNet'),'/subnets/',variables('rds-vNetSubnet1Name'))]",
     "adVnet-id": "[resourceId(parameters('adVnetRG'), 'Microsoft.Network/virtualNetworks', parameters('adVnetName'))]",
+    "assetLocation": "https://raw.githubusercontent.com/Azure/azure-QuickStart-Templates/master/rds-deployment/",
+    "brokerIpRef": "brokerpublicIp",
+    "cbdnsLabelPrefix": "[concat('cbd', resourceGroup().name)]",
+    "dnsServerPrivateIp": "10.1.0.4",
+    "gatewayIpRef": "gatewaypublicIp",
+    "gwdnsLabelPrefix": "[concat('gwd', resourceGroup().name)]",
+    "imageOffer": "WindowsServer",
+    "imagePublisher": "MicrosoftWindowsServer",
+    "publicIpRef": "publicIp",
     "rds-vNetPrefix": "10.1.0.0/16",
     "rds-vNetSubnet1Name": "Subnet-1",
     "rds-vNetSubnet1Prefix": "10.1.0.0/24",
     "rds-vNetSubnet2Name": "Subnet-2",
     "rds-vNetSubnet2Prefix": "10.1.1.0/24",
-    "publicIpRef": "publicIp",
-    "brokerIpRef": "brokerpublicIp",
-    "gatewayIpRef": "gatewaypublicIp",
-    "assetLocation": "https://raw.githubusercontent.com/Azure/azure-QuickStart-Templates/master/rds-deployment/"
+    "storageAccountName": "[tolower(concat('rdsa', uniqueString(resourceGroup().id)))]",
+    "storageAccountType": "Standard_LRS",
+    "subnet-id": "[concat(resourceId('Microsoft.Network/virtualNetworks','rds-vNet'),'/subnets/',variables('rds-vNetSubnet1Name'))]",
+    "uniqueStorageAccountContainerName": "[concat('sac', resourceGroup().name)]"
   },
   "resources": [
     {
@@ -169,27 +169,7 @@
             }
           }
         ]
-      },
-     "resources": [
-      {
-        "name": "vNetPeer2RDSVnet",
-        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-        "apiVersion": "2016-09-01",
-        "dependsOn": [
-          "Microsoft.Network/virtualNetworks/rds-vNet"
-        ],
-        "properties": {
-          "allowVirtualNetworkAccess": "True",
-          "allowForwardedTraffic": "False",
-          "allowGatewayTransit": "False",
-          "useRemoteGateways": "False",
-          "remoteVirtualNetwork": {
-            "id": "/subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/eerdsclusterrg/providers/Microsoft.Network/virtualNetworks/rds-vNet"
-          },
-          "peeringState": "Connected"
-        }
       }
-      ]
     },
       {
         "apiVersion": "2015-06-15",
