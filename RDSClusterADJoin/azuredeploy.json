@@ -169,28 +169,7 @@
             }
           }
         ]
-      },
-     "resources": [
-      {
-        "id": "[Variables('adVnet-id')]",
-        "name": "vNetPeer2RDSVnet",
-        "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-        "apiVersion": "2016-09-01",
-        "dependsOn": [
-          "Microsoft.Network/virtualNetworks/rds-vNet"
-        ],
-        "properties": {
-          "allowVirtualNetworkAccess": "True",
-          "allowForwardedTraffic": "False",
-          "allowGatewayTransit": "False",
-          "useRemoteGateways": "False",
-          "remoteVirtualNetwork": {
-            "id": "Microsoft.Network/virtualNetworks/rds-vNet"
-          },
-          "peeringState": "Connected"
-        }
       }
-    ]
    },
       {
         "apiVersion": "2015-06-15",
