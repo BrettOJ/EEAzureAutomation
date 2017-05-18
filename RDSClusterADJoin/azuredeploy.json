@@ -81,20 +81,6 @@
         "description": "The size of the RDSH VMs"
       },
       "defaultValue": "Standard_A4"
-    },
-    "modulseUrl": {
-      "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/RDSClusterADJoin/UpdateLCMforAAPull.zip",
-      "metadata": {
-        "description": "URL for the DSC configuration package. NOTE: Can be a Github url(raw) to the zip file (this is the default value)"
-      }
-    },
-    "configurationFunction": {
-      "type": "string",
-      "defaultValue": "UpdateLCMforAAPull.ps1\\ConfigureLCMforAAPull",
-      "metadata": {
-        "description": "DSC configuration function to call. Should contain filename and function in the format fileName.ps1\\configurationfunction"
-      }
     }
   },
   "variables": {
@@ -111,7 +97,9 @@
     "subnet-id": "[concat(variables('adVnet-id'),'/subnets/',variables('adVNETSubnet1Name'))]",
     "storageAccountName": "[tolower(concat('rdsa', uniqueString(resourceGroup().id)))]",
     "storageAccountType": "Standard_LRS",
-    "uniqueStorageAccountContainerName": "[concat('sac', resourceGroup().name)]"
+    "uniqueStorageAccountContainerName": "[concat('sac', resourceGroup().name)]",
+    "modulseUrl": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/RDSClusterADJoin/UpdateLCMforAAPull.zip",
+    "configurationFunction": "UpdateLCMforAAPull.ps1\\ConfigureLCMforAAPull"
   },
   "resources": [
     {
@@ -415,10 +403,10 @@
       },
       "resources": [
         {
-          "type": "Microsoft.Compute/virtualMachines/extensions",
           "name": "gw-vm/Microsoft.Powershell.DSC",
-          "apiVersion": "2016-04-30-preview",
+          "type": "extensions",
           "location": "[resourceGroup().location]",
+          "apiVersion": "2016-03-30",
           "tags": {
             "AutomationAccountARMID": "subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/EEAutomationRG/providers/Microsoft.Automation/automationAccounts/EEAutomation"
           },
@@ -428,8 +416,8 @@
             "typeHandlerVersion": "2.22",
             "autoUpgradeMinorVersion": false,
             "settings": {
-              "ModulesUrl": "[parameters('modulseUrl')]",
-              "ConfigurationFunction": "[parameters('configurationFunction')]",
+              "ModulesUrl": "[variables('modulseUrl')]",
+              "ConfigurationFunction": "[variables('configurationFunction')]",
               "Properties": [
                 {
                   "Name": "RegistrationKey",
@@ -557,8 +545,8 @@
             "typeHandlerVersion": "2.22",
             "autoUpgradeMinorVersion": false,
             "settings": {
-              "ModulesUrl": "[parameters('modulesUrl')]",
-              "ConfigurationFunction": "[parameters('configurationFunction')]",
+              "ModulesUrl": "[variables('modulseUrl')]",
+              "ConfigurationFunction": "[Variables('configurationFunction')]",
               "Properties": [
                 {
                   "Name": "RegistrationKey",
@@ -671,7 +659,7 @@
         {
           "type": "Microsoft.Compute/virtualMachines/extensions",
           "name": "cb-vm/Microsoft.Powershell.DSC",
-          "apiVersion": "2016-03-30",
+          "apiVersion": "2016-04-30-preview",
           "location": "[resourceGroup().location]",
           "tags": {
             "AutomationAccountARMID": "subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/EEAutomationRG/providers/Microsoft.Automation/automationAccounts/EEAutomation"
@@ -681,9 +669,9 @@
             "type": "DSC",
             "typeHandlerVersion": "2.22",
             "autoUpgradeMinorVersion": false,
+            "modulesUrl": "[variables('modulseUrl')]",
+            "configurationFunction": "[variables('configurationFunction')]",
             "settings": {
-              "ModulesUrl": "[parameters('modulesUrl')]",
-              "ConfigurationFunction": "[parameters('configurationFunction')]",
               "Properties": [
                 {
                   "Name": "RegistrationKey",
