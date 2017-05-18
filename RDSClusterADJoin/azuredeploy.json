@@ -98,7 +98,7 @@
     }
   },
   "variables": {
-    "adVnet-id": "/subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/EECorpDomain/providers/Microsoft.Network/virtualNetworks/adVNET",
+    "adVnet-id": "[resourceId(parameters('adVnetRG'), 'Microsoft.Network/virtualNetworks', parameters('adVnetName'))]",
     "assetLocation": "https://raw.githubusercontent.com/Azure/azure-QuickStart-Templates/master/rds-deployment/",
     "brokerIpRef": "brokerpublicIp",
     "cbdnsLabelPrefix": "[concat('cbd', resourceGroup().name)]",
@@ -108,9 +108,9 @@
     "imagePublisher": "MicrosoftWindowsServer",
     "publicIpRef": "publicIp",
     "adVNETSubnet1Name": "adSubnet",
+    "subnet-id": "[concat(variables('adVnet-id'),'/subnets/',variables('adVNETSubnet1Name'))]",
     "storageAccountName": "[tolower(concat('rdsa', uniqueString(resourceGroup().id)))]",
     "storageAccountType": "Standard_LRS",
-    "subnet-id": "[concat(resourceId('Microsoft.Network/virtualNetworks','adVNET'),'/subnets/',variables('adVNETSubnet1Name'))]",
     "uniqueStorageAccountContainerName": "[concat('sac', resourceGroup().name)]"
   },
   "resources": [
