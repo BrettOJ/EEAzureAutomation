@@ -404,7 +404,7 @@
       "resources": [
         {
           "name": "gw-vm/Microsoft.Powershell.DSC",
-          "type": "extensions",
+          "type": "Microsoft.Compute/virtualMachines/extensions",
           "location": "[resourceGroup().location]",
           "apiVersion": "2016-03-30",
           "tags": {
