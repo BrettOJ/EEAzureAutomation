@@ -415,9 +415,9 @@
             "type": "DSC",
             "typeHandlerVersion": "2.22",
             "autoUpgradeMinorVersion": false,
+            "ModulesUrl": "[variables('modulseUrl')]",
+            "ConfigurationFunction": "[variables('configurationFunction')]",
             "settings": {
-              "ModulesUrl": "[variables('modulseUrl')]",
-              "ConfigurationFunction": "[variables('configurationFunction')]",
               "Properties": [
                 {
                   "Name": "RegistrationKey",
@@ -544,9 +544,9 @@
             "type": "DSC",
             "typeHandlerVersion": "2.22",
             "autoUpgradeMinorVersion": false,
+            "ModulesUrl": "[variables('modulseUrl')]",
+            "ConfigurationFunction": "[Variables('configurationFunction')]",
             "settings": {
-              "ModulesUrl": "[variables('modulseUrl')]",
-              "ConfigurationFunction": "[Variables('configurationFunction')]",
               "Properties": [
                 {
                   "Name": "RegistrationKey",
