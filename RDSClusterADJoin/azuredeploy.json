@@ -584,7 +584,7 @@
           "location": "[resourceGroup().location]",
           "apiVersion": "2016-04-30-preview",
           "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', 'gw-vm')]"
+            "[resourceId('Microsoft.Compute/virtualMachines', 'cb-vm')]"
           ],
           "properties": {
             "publisher": "Microsoft.Powershell",
