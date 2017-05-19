@@ -403,7 +403,7 @@
       "resources": [
         {
           "name": "gw-vm/Microsoft.Powershell.DSC",
-          "type": "extensions",
+          "type": "Microsoft.Compute/virtualMachines/extensions",
           "location": "[resourceGroup().location]",
           "apiVersion": "2016-04-30-preview",
           "properties": {
@@ -494,7 +494,7 @@
       "resources": [
         {
           "name": "[concat('rdsh-', copyindex(), '/Microsoft.Powershell.DSC')]",
-          "type": "extensions",
+          "type": "Microsoft.Compute/virtualMachines/extensions",
           "location": "[resourceGroup().location]",
           "apiVersion": "2016-04-30-preview",
           "properties": {
@@ -580,7 +580,7 @@
       "resources": [
         {
           "name": "cb-vm/Microsoft.Powershell.DSC",
-          "type": "extensions",
+          "type": "Microsoft.Compute/virtualMachines/extensions",
           "location": "[resourceGroup().location]",
           "apiVersion": "2016-04-30-preview",
           "properties": {
