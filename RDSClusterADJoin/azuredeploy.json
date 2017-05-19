@@ -99,7 +99,8 @@
     "storageAccountType": "Standard_LRS",
     "uniqueStorageAccountContainerName": "[concat('sac', resourceGroup().name)]",
     "modulseUrl": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/RDSClusterADJoin/UpdateLCMforAAPull.zip",
-    "configurationFunction": "UpdateLCMforAAPull.ps1\\ConfigureLCMforAAPull"
+    "configurationScript": "UpdateLCMforAAPull.ps1",
+    "configurationFunction": "ConfigureLCMforAAPull"
   },
   "resources": [
     {
@@ -114,7 +115,6 @@
         }
       }
     },
-
     {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/publicIPAddresses",
@@ -357,14 +357,13 @@
     },
     {
       "apiVersion": "2016-04-30-preview",
-      "type": "Microsoft.Compute/virtualMachines",
-      "name": "gw-vm",
-      "location": "[resourceGroup().location]",
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
         "[resourceId('Microsoft.Compute/availabilitySets', 'gw-availabilityset')]",
         "Microsoft.Network/networkInterfaces/gw-nic"
       ],
+      "location": "[resourceGroup().location]",
+      "name": "gw-vm",
       "properties": {
         "hardwareProfile": {
           "vmSize": "Standard_A2"
@@ -404,80 +403,42 @@
       "resources": [
         {
           "name": "gw-vm/Microsoft.Powershell.DSC",
-          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "type": "extensions",
           "location": "[resourceGroup().location]",
-          "apiVersion": "2016-03-30",
-          "tags": {
-            "AutomationAccountARMID": "subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/EEAutomationRG/providers/Microsoft.Automation/automationAccounts/EEAutomation"
-          },
+          "apiVersion": "2016-04-30-preview",
           "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
-            "typeHandlerVersion": "2.22",
-            "autoUpgradeMinorVersion": false,
-            "ModulesUrl": "[variables('modulseUrl')]",
-            "ConfigurationFunction": "[variables('configurationFunction')]",
+            "typeHandlerVersion": "2.20",
+            "autoUpgradeMinorVersion": true,
             "settings": {
-              "Properties": [
-                {
-                  "Name": "RegistrationKey",
-                  "Value": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "RegistrationUrl",
-                  "Value": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "NodeConfigurationName",
-                  "Value": "EEJoinProdDomain.localhost",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "ConfigurationMode",
-                  "Value": "applyAndMonitor",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "ConfigurationModeFrequencyMins",
-                  "Value": "15",
-                  "TypeName": "System.Int32"
-                },
-                {
-                  "Name": "RefreshFrequencyMins",
-                  "Value": "30",
-                  "TypeName": "System.Int32"
-                },
-                {
-                  "Name": "RebootNodeIfNeeded",
-                  "Value": false,
-                  "TypeName": "System.Boolean"
-                },
-                {
-                  "Name": "ActionAfterReboot",
-                  "Value": "continueConfiguration",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "AllowModuleOverwrite",
-                  "Value": false,
-                  "TypeName": "System.Boolean"
-                },
-                {
-                  "Name": "Timestamp",
-                  "Value": "7/05/2017 1:28:18 AM",
-                  "TypeName": "System.String"
-                }
-              ]
+              "configuration": {
+                "url": "[variables('modulseUrl')]",
+                "script": "[variables('configurationScript')]",
+                "function": "[variables('configurationFunction')]"
+              },
+              "configurationArguments": {
+                "RegistrationKey": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
+                "RegistrationUrl": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
+                "NodeConfigurationName": "EEJoinProdDomain.localhost",
+                "ConfigurationMode": "applyAndMonitor",
+                "ConfigurationModeFrequencyMins": "15",
+                "RefreshFrequencyMins": "30",
+                "RebootNodeIfNeeded": false,
+                "ActionAfterReboot": "continueConfiguration",
+                "AllowModuleOverwrite": false,
+                "Timestamp": "7/05/2017 1:28:18 AM"
+              }
             },
-            "protectedSettings": {}
-          },
-          "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', 'gw-vm')]"
-          ]
+            "protectedSettings": {
+            },
+            "dependsOn": [
+              "[resourceId('Microsoft.Compute/virtualMachines', 'gw-vm')]"
+            ]
+          }
         }
-      ]
+      ],
+      "type": "Microsoft.Compute/virtualMachines"
     },
     {
       "apiVersion": "2016-04-30-preview",
@@ -532,79 +493,40 @@
       },
       "resources": [
         {
-          "type": "Microsoft.Compute/virtualMachines/extensions",
           "name": "[concat('rdsh-', copyindex(), '/Microsoft.Powershell.DSC')]",
-          "apiVersion": "2016-04-30-preview",
+          "type": "extensions",
           "location": "[resourceGroup().location]",
-          "tags": {
-            "AutomationAccountARMID": "subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/EEAutomationRG/providers/Microsoft.Automation/automationAccounts/EEAutomation"
-          },
+          "apiVersion": "2016-04-30-preview",
           "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
-            "typeHandlerVersion": "2.22",
-            "autoUpgradeMinorVersion": false,
-            "ModulesUrl": "[variables('modulseUrl')]",
-            "ConfigurationFunction": "[Variables('configurationFunction')]",
+            "typeHandlerVersion": "2.20",
+            "autoUpgradeMinorVersion": true,
             "settings": {
-              "Properties": [
-                {
-                  "Name": "RegistrationKey",
-                  "Value": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "RegistrationUrl",
-                  "Value": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "NodeConfigurationName",
-                  "Value": "EEJoinProdDomain.localhost",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "ConfigurationMode",
-                  "Value": "applyAndMonitor",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "ConfigurationModeFrequencyMins",
-                  "Value": "15",
-                  "TypeName": "System.Int32"
-                },
-                {
-                  "Name": "RefreshFrequencyMins",
-                  "Value": "30",
-                  "TypeName": "System.Int32"
-                },
-                {
-                  "Name": "RebootNodeIfNeeded",
-                  "Value": false,
-                  "TypeName": "System.Boolean"
-                },
-                {
-                  "Name": "ActionAfterReboot",
-                  "Value": "continueConfiguration",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "AllowModuleOverwrite",
-                  "Value": false,
-                  "TypeName": "System.Boolean"
-                },
-                {
-                  "Name": "Timestamp",
-                  "Value": "7/05/2017 1:28:18 AM",
-                  "TypeName": "System.String"
-                }
-              ]
+              "configuration": {
+                "url": "[variables('modulseUrl')]",
+                "script": "[variables('configurationScript')]",
+                "function": "[variables('configurationFunction')]"
+              },
+              "configurationArguments": {
+                "RegistrationKey": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
+                "RegistrationUrl": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
+                "NodeConfigurationName": "EEJoinProdDomain.localhost",
+                "ConfigurationMode": "applyAndMonitor",
+                "ConfigurationModeFrequencyMins": "15",
+                "RefreshFrequencyMins": "30",
+                "RebootNodeIfNeeded": false,
+                "ActionAfterReboot": "continueConfiguration",
+                "AllowModuleOverwrite": false,
+                "Timestamp": "7/05/2017 1:28:18 AM"
+              }
             },
-            "protectedSettings": {}
-          },
-          "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', 'rdsh-', copyindex())]"
-          ]
+            "protectedSettings": {
+            },
+            "dependsOn": [
+              "[concat('Microsoft.Compute/virtualMachines/', 'rdsh-', copyindex())]"
+            ]
+          }
         }
       ]
     },
@@ -657,84 +579,49 @@
       },
       "resources": [
         {
-          "type": "Microsoft.Compute/virtualMachines/extensions",
           "name": "cb-vm/Microsoft.Powershell.DSC",
-          "apiVersion": "2016-04-30-preview",
+          "type": "extensions",
           "location": "[resourceGroup().location]",
-          "tags": {
-            "AutomationAccountARMID": "subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/EEAutomationRG/providers/Microsoft.Automation/automationAccounts/EEAutomation"
-          },
+          "apiVersion": "2016-04-30-preview",
           "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
-            "typeHandlerVersion": "2.22",
-            "autoUpgradeMinorVersion": false,
-            "modulesUrl": "[variables('modulseUrl')]",
-            "configurationFunction": "[variables('configurationFunction')]",
+            "typeHandlerVersion": "2.20",
+            "autoUpgradeMinorVersion": true,
             "settings": {
-              "Properties": [
-                {
-                  "Name": "RegistrationKey",
-                  "Value": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "RegistrationUrl",
-                  "Value": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "NodeConfigurationName",
-                  "Value": "EEJoinProdDomain.localhost",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "ConfigurationMode",
-                  "Value": "applyAndMonitor",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "ConfigurationModeFrequencyMins",
-                  "Value": "15",
-                  "TypeName": "System.Int32"
-                },
-                {
-                  "Name": "RefreshFrequencyMins",
-                  "Value": "30",
-                  "TypeName": "System.Int32"
-                },
-                {
-                  "Name": "RebootNodeIfNeeded",
-                  "Value": false,
-                  "TypeName": "System.Boolean"
-                },
-                {
-                  "Name": "ActionAfterReboot",
-                  "Value": "continueConfiguration",
-                  "TypeName": "System.String"
-                },
-                {
-                  "Name": "AllowModuleOverwrite",
-                  "Value": false,
-                  "TypeName": "System.Boolean"
-                },
-                {
-                  "Name": "Timestamp",
-                  "Value": "7/05/2017 1:28:18 AM",
-                  "TypeName": "System.String"
-                }
-              ]
+              "configuration": {
+                "url": "[variables('modulseUrl')]",
+                "script": "[variables('configurationScript')]",
+                "function": "[variables('configurationFunction')]"
+              },
+              "configurationArguments": {
+                "RegistrationKey": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
+                "RegistrationUrl": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
+                "NodeConfigurationName": "EEJoinProdDomain.localhost",
+                "ConfigurationMode": "applyAndMonitor",
+                "ConfigurationModeFrequencyMins": "15",
+                "RefreshFrequencyMins": "30",
+                "RebootNodeIfNeeded": false,
+                "ActionAfterReboot": "continueConfiguration",
+                "AllowModuleOverwrite": false,
+                "Timestamp": "7/05/2017 1:28:18 AM"
+              }
             },
-            "protectedSettings": {}
-          },
-          "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', 'cb-vm')]"
-          ]
+            "protectedSettings": {
+            },
+            "dependsOn": [
+              "[resourceId('Microsoft.Compute/virtualMachines', 'gw-vm')]"
+            ]
+          }
         }
       ]
     }
   ]
 }
+     
+
+   
+
 
    
  
