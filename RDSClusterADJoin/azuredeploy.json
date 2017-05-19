@@ -406,9 +406,7 @@
           "type": "Microsoft.Compute/virtualMachines/extensions",
           "location": "[resourceGroup().location]",
           "apiVersion": "2016-04-30-preview",
-          "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', 'gw-vm')]"
-          ],
+          "dependsOn": ["[resourceId('Microsoft.Compute/virtualMachines', 'gw-vm')]"],
           "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
@@ -583,9 +581,7 @@
           "type": "Microsoft.Compute/virtualMachines/extensions",
           "location": "[resourceGroup().location]",
           "apiVersion": "2016-04-30-preview",
-          "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', 'cb-vm')]"
-          ],
+          "dependsOn": ["[resourceId('Microsoft.Compute/virtualMachines', 'cb-vm')]"],
           "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
