@@ -581,7 +581,10 @@
           "type": "Microsoft.Compute/virtualMachines/extensions",
           "location": "[resourceGroup().location]",
           "apiVersion": "2016-04-30-preview",
-          "dependsOn": ["[resourceId('Microsoft.Compute/virtualMachines', 'cb-vm')]"],
+          "dependsOn": [
+            "[resourceId('Microsoft.Compute/virtualMachines', 'cb-vm')]",
+            "rdsh-vm-loop"
+          ],
           "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
@@ -603,7 +606,13 @@
                 "RebootNodeIfNeeded": false,
                 "ActionAfterReboot": "continueConfiguration",
                 "AllowModuleOverwrite": false,
-                "Timestamp": "7/05/2017 1:28:18 AM"
+                "Timestamp": "7/05/2017 1:28:18 AM",
+                "connectionBroker": "[concat('broker.',parameters('adDomainName'))]",
+                "domainName": "[parameters('adDomainName')]",
+                "externalfqdn": "[concat('gateway.',parameters('adDomainName'))]",
+                "numberOfRdshInstances": "[parameters('numberOfRdshInstances')]",
+                "sessionHostNamingPrefix": "rdsh-",
+                "webAccessServer": "[concat('gateway.',parameters('adDomainName'))]"
               }
             },
             "protectedSettings": {
