@@ -71,7 +71,7 @@
         "Standard_D5"
       ],
       "metadata": {
-        "description": "The size of the RDSH VMs"
+        "description": "The size of the SQL Server VMs"
       },
       "defaultValue": "Standard_A4"
     }
