@@ -101,14 +101,15 @@
       "type": "string",
       "metadata": {
         "description": "Resource ID of the existing VNET. You can find the Resource ID for the VNET on the Properties blade of the VNET."
-      }
+      },
+      "defaultValue": "/subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/EECorpDomain/providers/Microsoft.Network/virtualNetworks/adVNET"
     },
     "existingSqlSubnetName": {
       "type": "string",
       "metadata": {
         "description": "Name of the existing subnet in the existing VNET to which the SQL & Witness VMs should be deployed"
       },
-      "defaultValue": "default"
+      "defaultValue": "sqlsubnet"
     },
     "existingAdPDCVMName": {
       "type": "string",
@@ -129,7 +130,7 @@
       "metadata": {
         "description": "Location of resources that the script is dependent on such as linked templates and DSC modules"
       },
-      "defaultValue": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/sql-server-2014-alwayson-existing-vnet-and-ad"
+      "defaultValue": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/SQLServerClusterADJoin"
     },
     "_artifactsLocationSasToken": {
       "type": "securestring",
@@ -140,7 +141,7 @@
     }
   },
   "variables": {
-    "sqlSubnetRef": "[concat('/subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/EECorpDomain/providers/Microsoft.Network/virtualNetworks/adVNET','/subnets/',parameters('existingSqlSubnetName'))]",
+    "sqlSubnetRef": "[concat(parameters('existingVirtualNetworkId'),'/subnets/',parameters('existingSqlSubnetName'))]",
     "deploySqlClusterTemplateURL": "[concat(parameters('_artifactsLocation'),'/nested/deploy-sql-cluster.json',parameters('_artifactsLocationSasToken'))]",
     "deploySqlCluster": "deploySqlCluster"
   },
