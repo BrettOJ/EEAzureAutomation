@@ -53,12 +53,12 @@
 		},
 		"windowsImageOffer": {
 			"type": "string",
-			"defaultValue": "SQL2014SP1-WS2012R2"
+			"defaultValue": "SQL2014-WS2012R2"
 		},
-		"windowsImageSKU": {
-			"type": "string",
-			"defaultValue": "Enterprise"
-		},
+    "windowsImageSKU": {
+      "type": "string",
+      "defaultValue": "Enterprise-Optimized-for-DW"
+    },
 		"windowsImageVersion": {
 			"type": "string",
 			"defaultValue": "latest"

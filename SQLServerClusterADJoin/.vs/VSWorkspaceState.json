@@ -4,6 +4,6 @@
     "\\dsc",
     "\\nested"
   ],
-  "SelectedNode": "\\nested\\deploy-sql-cluster.json",
+  "SelectedNode": "\\azuredeploy.json",
   "PreviewInSolutionExplorer": false
 }

@@ -44,7 +44,7 @@
     },
     "imageSKU": {
       "type": "string",
-      "defaultValue": "Enterprise"
+      "defaultValue": "Enterprise-Optimized-for-DW"
     },
     "numberOfSQLInstances": {
       "type": "int",
