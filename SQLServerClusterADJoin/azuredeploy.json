@@ -110,7 +110,7 @@
     }
   },
   "variables": {
-    "sqlSubnetRef": "[concat('Microsoft.Network/virtualNetworks/',parameters('existingVirtualNetworkId'),'/subnets/',parameters('existingSqlSubnetName'))]",
+    "sqlSubnetRef": "[concat(parameters('existingVirtualNetworkId'),'/subnets/',parameters('existingSqlSubnetName'))]",
     "deploySqlClusterTemplateURL": "[concat(parameters('_artifactsLocation'),'/nested/deploy-sql-cluster.json',parameters('_artifactsLocationSasToken'))]",
     "deploySqlCluster": "deploySqlCluster"
   },
