@@ -110,7 +110,7 @@
     }
   },
   "variables": {
-    "sqlSubnetRef": "[concat(parameters('existingVirtualNetworkId'),'/subnets/',parameters('existingSqlSubnetName'))]",
+    "sqlSubnetRef": "[concat('/subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/EECorpDomain/providers/Microsoft.Network/virtualNetworks/adVNET','/subnets/',parameters('existingSqlSubnetName'))]",
     "deploySqlClusterTemplateURL": "[concat(parameters('_artifactsLocation'),'/nested/deploy-sql-cluster.json',parameters('_artifactsLocationSasToken'))]",
     "deploySqlCluster": "deploySqlCluster"
   },
