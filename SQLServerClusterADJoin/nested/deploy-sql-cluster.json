@@ -64,35 +64,38 @@
 			"defaultValue": "latest"
 		}
 	},
-	"variables": {
-		"apiVersionStorage": "2015-06-15",
-		"sqlDiskSize": 1000,
-		"sqlWitnessDiskSize": 128,
-		"sqlNamePrefix": "[concat(parameters('namePrefix'),'-sql-')]",
-		"sqlAvailabilitySetName": "[concat(variables('sqlNamePrefix'),'as')]",
-		"sqlLBName": "[concat(variables('sqlNamePrefix'),'ilb')]",
-		"sqllbID": "[resourceId('Microsoft.Network/loadBalancers',variables('sqlLBName'))]",
-		"lbFE1": "[concat(variables('sqlNamePrefix'),'ilbfe1')]",
-		"lbBE": "[concat(variables('sqlNamePrefix'),'ilbbe')]",
-		"sqlLBID": "[resourceId('Microsoft.Network/loadBalancers',variables('sqlLBName'))]",
-		"sqlLBFEConfigID1": "[concat(variables('sqllbID'),'/frontendIPConfigurations/',variables('lbFE1'))]",
-		"sqlLBBEAddressPoolID": "[concat(variables('sqllbID'),'/backendAddressPools/',variables('lbBE'))]",
-		"sqlAOProbe1": "[concat(variables('sqlNamePrefix'),'ilbp1')]",
-		"sqlLBProbeID1": "[concat(variables('sqllbID'),'/probes/',variables('sqlAOProbe1'))]",
-		"sqlStorageAccountPrefix": "[concat(parameters('namePrefix'),take(uniqueString(resourceGroup().id),8),'sql')]",
-		"sqlWitnessStorageAccountName": "[concat(parameters('namePrefix'),take(uniqueString(resourceGroup().id),8),'wit')]",
-		"vmContainerName": "vhds",
-		"deploySqlWitnessShare": "deploySqlWitnessShare",
-		"deploySqlWitnessShareId": "[concat('Microsoft.Resources/deployments/', variables('deploySqlWitnessShare'))]",
-		"deploySqlWitnessShareTemplateUrl": "[concat(parameters('_artifactsLocation'),'/nested/deploy-sql-witness.json',parameters('_artifactsLocationSasToken'))]",
-		"sqlWitnessSharePath": "[concat(parameters('namePrefix'),'-fsw')]",
-		"sqlWitnessVMName": "[concat(variables('sqlNamePrefix'),'w')]",
-		"deploySqlAlwaysOn": "deploySqlAlwaysOn",
-		"deploySqlAlwaysOnTemplateUrl": "[concat(parameters('_artifactsLocation'),'/nested/deploy-sql-alwayson.json',parameters('_artifactsLocationSasToken'))]",
-		"sqlAOEPName": "[concat(parameters('namePrefix'),'-agep')]",
-		"sqlAOAGName1": "[concat(parameters('namePrefix'),'-ag1')]",
-		"sqlAOListener1": "[concat(parameters('namePrefix'),'-agl1')]"
-	},
+  "variables": {
+    "apiVersionStorage": "2015-06-15",
+    "sqlDiskSize": 1000,
+    "sqlWitnessDiskSize": 128,
+    "sqlNamePrefix": "[concat(parameters('namePrefix'),'-sql-')]",
+    "sqlAvailabilitySetName": "[concat(variables('sqlNamePrefix'),'as')]",
+    "sqlLBName": "[concat(variables('sqlNamePrefix'),'ilb')]",
+    "sqllbID": "[resourceId('Microsoft.Network/loadBalancers',variables('sqlLBName'))]",
+    "lbFE1": "[concat(variables('sqlNamePrefix'),'ilbfe1')]",
+    "lbBE": "[concat(variables('sqlNamePrefix'),'ilbbe')]",
+    "sqlLBID": "[resourceId('Microsoft.Network/loadBalancers',variables('sqlLBName'))]",
+    "sqlLBFEConfigID1": "[concat(variables('sqllbID'),'/frontendIPConfigurations/',variables('lbFE1'))]",
+    "sqlLBBEAddressPoolID": "[concat(variables('sqllbID'),'/backendAddressPools/',variables('lbBE'))]",
+    "sqlAOProbe1": "[concat(variables('sqlNamePrefix'),'ilbp1')]",
+    "sqlLBProbeID1": "[concat(variables('sqllbID'),'/probes/',variables('sqlAOProbe1'))]",
+    "sqlStorageAccountPrefix": "[concat(parameters('namePrefix'),take(uniqueString(resourceGroup().id),8),'sql')]",
+    "sqlWitnessStorageAccountName": "[concat(parameters('namePrefix'),take(uniqueString(resourceGroup().id),8),'wit')]",
+    "vmContainerName": "vhds",
+    "deploySqlWitnessShare": "deploySqlWitnessShare",
+    "deploySqlWitnessShareId": "[concat('Microsoft.Resources/deployments/', variables('deploySqlWitnessShare'))]",
+    "deploySqlWitnessShareTemplateUrl": "[concat(parameters('_artifactsLocation'),'/nested/deploy-sql-witness.json',parameters('_artifactsLocationSasToken'))]",
+    "sqlWitnessSharePath": "[concat(parameters('namePrefix'),'-fsw')]",
+    "sqlWitnessVMName": "[concat(variables('sqlNamePrefix'),'w')]",
+    "deploySqlAlwaysOn": "deploySqlAlwaysOn",
+    "deploySqlAlwaysOnTemplateUrl": "[concat(parameters('_artifactsLocation'),'/nested/deploy-sql-alwayson.json',parameters('_artifactsLocationSasToken'))]",
+    "sqlAOEPName": "[concat(parameters('namePrefix'),'-agep')]",
+    "sqlAOAGName1": "[concat(parameters('namePrefix'),'-ag1')]",
+    "sqlAOListener1": "[concat(parameters('namePrefix'),'-agl1')]",
+    "configurationScript": "UpdateLCMforAAPull.ps1",
+    "modulseUrl": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/SQLServerClusterADJoin/UpdateLCMforAAPull.zip",
+    "configurationFunction": "ConfigureLCMforAAPull"
+  },
 	"resources": [
 		{
 			"type": "Microsoft.Compute/availabilitySets",
@@ -230,246 +233,216 @@
 				]
 			}
 		},
-		{
-			"apiVersion": "2015-06-15",
-			"type": "Microsoft.Compute/virtualMachines",
-			"name": "[concat(variables('sqlNamePrefix'), copyindex())]",
-			"location": "[resourceGroup().location]",
-			"copy": {
-				"name": "virtualMachineLoop",
-				"count": 2
-			},
-			"dependsOn": [
-				"[resourceId('Microsoft.Storage/storageAccounts',concat(variables('sqlStorageAccountPrefix'),  copyindex()))]",
-				"[resourceId('Microsoft.Network/networkInterfaces',concat(variables('sqlNamePrefix'), copyindex(), '-nic'))]",
-				"[resourceId('Microsoft.Compute/availabilitySets', variables('sqlAvailabilitySetName'))]"
-			],
-			"properties": {
-				"hardwareProfile": {
-					"vmSize": "[parameters('SqlVMSize')]"
-				},
-				"availabilitySet": {
-					"id": "[resourceId('Microsoft.Compute/availabilitySets', variables('sqlAvailabilitySetName'))]"
-				},
-				"osProfile": {
-					"computerName": "[concat(variables('sqlNamePrefix'), copyindex())]",
-					"adminUsername": "[parameters('adminUsername')]",
-					"adminPassword": "[parameters('adminPassword')]"
-				},
-				"storageProfile": {
-					"imageReference": {
-						"publisher": "[parameters('windowsImagePublisher')]",
-						"offer": "[parameters('windowsImageOffer')]",
-						"sku": "[parameters('windowsImageSKU')]",
-						"version": "[parameters('windowsImageVersion')]"
-					},
-					"osDisk": {
-						"name": "[concat(variables('sqlNamePrefix'), copyindex(), '-osdisk.vhd')]",
-						"vhd": {
-							"uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/',variables('sqlStorageAccountPrefix'),copyIndex()),variables('apiVersionStorage')).primaryEndpoints.blob, variables('vmContainerName'), '/', variables('sqlNamePrefix'), copyindex(), '-osdisk.vhd')]"
-						},
-						"caching": "ReadWrite",
-						"createOption": "FromImage"
-					},
-					"dataDisks": [
-						{
-							"vhd": {
-								"uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/',variables('sqlStorageAccountPrefix'),copyIndex()),variables('apiVersionStorage')).primaryEndpoints.blob, variables('vmContainerName'), '/', variables('sqlNamePrefix'), copyindex(), '-datadisk1.vhd')]"
-							},
-							"name": "[concat(variables('sqlNamePrefix'), copyindex(), '-datadisk1.vhd')]",
-							"caching": "None",
-							"createOption": "Empty",
-							"diskSizeGB": "[variables('sqlDiskSize')]",
-							"lun": 0
-						},
-						{
-							"vhd": {
-								"uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/',variables('sqlStorageAccountPrefix'),copyIndex()),variables('apiVersionStorage')).primaryEndpoints.blob, variables('vmContainerName'), '/', variables('sqlNamePrefix'), copyindex(), '-logdisk1.vhd')]"
-							},
-							"name": "[concat(variables('sqlNamePrefix'), copyindex(), '-logdisk1.vhd')]",
-							"caching": "None",
-							"createOption": "Empty",
-							"diskSizeGB": "[variables('sqlDiskSize')]",
-							"lun": 1
-						}
-					]
-				},
-				"networkProfile": {
-					"networkInterfaces": [
-						{
-							"id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('sqlNamePrefix'), copyindex(), '-nic'))]"
-						}
-					]
-				}
-			}
-		},
-		{
-			"apiVersion": "2015-06-15",
-			"type": "Microsoft.Compute/virtualMachines",
-			"name": "[variables('sqlWitnessVMName')]",
-			"location": "[resourceGroup().location]",
-			"dependsOn": [
-				"[resourceId('Microsoft.Storage/storageAccounts',variables('sqlWitnessStorageAccountName'))]",
-				"[resourceId('Microsoft.Network/networkInterfaces',concat(variables('sqlWitnessVMName'), '-nic'))]",
-				"[resourceId('Microsoft.Compute/availabilitySets', variables('sqlAvailabilitySetName'))]"
-			],
-			"properties": {
-				"hardwareProfile": {
-					"vmSize": "[parameters('SqlWitnessVMSize')]"
-				},
-				"availabilitySet": {
-					"id": "[resourceId('Microsoft.Compute/availabilitySets', variables('sqlAvailabilitySetName'))]"
-				},
-				"osProfile": {
-					"computerName": "[variables('sqlWitnessVMName')]",
-					"adminUsername": "[parameters('adminUsername')]",
-					"adminPassword": "[parameters('adminPassword')]"
-				},
-				"storageProfile": {
-					"imageReference": {
-						"publisher": "[parameters('windowsImagePublisher')]",
-						"offer": "[parameters('windowsImageOffer')]",
-						"sku": "[parameters('windowsImageSKU')]",
-						"version": "[parameters('windowsImageVersion')]"
-					},
-					"osDisk": {
-						"name": "[concat(variables('sqlWitnessVMName'), '-osdisk.vhd')]",
-						"vhd": {
-							"uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/',variables('sqlWitnessStorageAccountName')),variables('apiVersionStorage')).primaryEndpoints.blob, variables('vmContainerName'), '/', variables('sqlWitnessVMName'), '-osdisk.vhd')]"
-						},
-						"caching": "ReadWrite",
-						"createOption": "FromImage"
-					},
-					"dataDisks": [
-						{
-							"vhd": {
-								"uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/',variables('sqlWitnessStorageAccountName')),variables('apiVersionStorage')).primaryEndpoints.blob, variables('vmContainerName'), '/', variables('sqlWitnessVMName'), '-datadisk1.vhd')]"
-							},
-							"name": "[concat(variables('sqlWitnessVMName'), '-datadisk1.vhd')]",
-							"caching": "None",
-							"createOption": "Empty",
-							"diskSizeGB": "[variables('sqlWitnessDiskSize')]",
-							"lun": 0
-						}
-					]
-				},
-				"networkProfile": {
-					"networkInterfaces": [
-						{
-							"id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('sqlWitnessVMName'), '-nic'))]"
-						}
-					]
-				}
-			}
-		},
-		{
-			"name": "[variables('deploySqlWitnessShare')]",
-			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2015-01-01",
-			"dependsOn": [
-				"[resourceId('Microsoft.Compute/virtualMachines',variables('sqlWitnessVMName'))]"
-			],
-			"properties": {
-				"mode": "Incremental",
-				"templateLink": {
-					"uri": "[variables('deploySqlWitnessShareTemplateUrl')]",
-					"contentVersion": "1.0.0.0"
-				},
-				"parameters": {
-					"sqlWitnessVMName": {
-						"value": "[variables('sqlWitnessVMName')]"
-					},
-					"domainName": {
-						"value": "[parameters('domainName')]"
-					},
-					"sharePath": {
-						"value": "[variables('sqlWitnessSharePath')]"
-					},
-					"adminUsername": {
-						"value": "[parameters('adminUsername')]"
-					},
-					"adminPassword": {
-						"value": "[parameters('adminPassword')]"
-					},
-					"_artifactsLocation": {
-						"value": "[parameters('_artifactsLocation')]"
-					},
-					"_artifactsLocationSasToken": {
-						"value": "[parameters('_artifactsLocationSasToken')]"
-					}
-				}
-			}
-		},
-		{
-			"name": "[variables('deploySqlAlwaysOn')]",
-			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2015-01-01",
-			"dependsOn": [
-				"[resourceId('Microsoft.Compute/virtualMachines',concat(variables('sqlNamePrefix'),'0'))]",
-				"[resourceId('Microsoft.Compute/virtualMachines',concat(variables('sqlNamePrefix'),'1'))]",
-				"[variables('deploySqlWitnessShareId')]"
-			],
-			"properties": {
-				"mode": "Incremental",
-				"templateLink": {
-					"uri": "[variables('deploySqlAlwaysOnTemplateUrl')]",
-					"contentVersion": "1.0.0.0"
-				},
-				"parameters": {
-					"sqlNamePrefix": {
-						"value": "[variables('sqlNamePrefix')]"
-					},
-					"domainName": {
-						"value": "[parameters('domainName')]"
-					},
-					"namePrefix": {
-						"value": "[parameters('namePrefix')]"
-					},
-					"sharePath": {
-						"value": "[variables('sqlWitnessSharePath')]"
-					},
-					"sqlWitnessVMName": {
-						"value": "[variables('sqlWitnessVMName')]"
-					},
-					"sqlLBName": {
-						"value": "[variables('sqlLBName')]"
-					},
-					"sqlLBIPAddress": {
-						"value": "[parameters('sqlLBIPAddress')]"
-					},
-					"dnsServerName": {
-						"value": "[parameters('dnsServerName')]"
-					},
-					"sqlServerServiceAccountUserName": {
-						"value": "[parameters('sqlServerServiceAccountUserName')]"
-					},
-					"sqlServerServiceAccountPassword": {
-						"value": "[parameters('sqlServerServiceAccountPassword')]"
-					},
-					"adminUsername": {
-						"value": "[parameters('adminUsername')]"
-					},
-					"adminPassword": {
-						"value": "[parameters('adminPassword')]"
-					},
-					"_artifactsLocation": {
-						"value": "[parameters('_artifactsLocation')]"
-					},
-					"_artifactsLocationSasToken": {
-						"value": "[parameters('_artifactsLocationSasToken')]"
-					},
-					"sqlAlwaysOnEndpointName": {
-						"value": "[variables('sqlAOEPName')]"
-					},
-					"sqlAlwaysOnAvailabilityGroupName1": {
-						"value": "[variables('sqlAOAGName1')]"
-					},
-					"sqlAlwaysOnAvailabilityGroupListenerName1": {
-						"value": "[variables('sqlAOListener1')]"
-					}
-				}
-			}
-		}
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(variables('sqlNamePrefix'), copyindex())]",
+      "location": "[resourceGroup().location]",
+      "copy": {
+        "name": "virtualMachineLoop",
+        "count": 2
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts',concat(variables('sqlStorageAccountPrefix'),  copyindex()))]",
+        "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('sqlNamePrefix'), copyindex(), '-nic'))]",
+        "[resourceId('Microsoft.Compute/availabilitySets', variables('sqlAvailabilitySetName'))]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('SqlVMSize')]"
+        },
+        "availabilitySet": {
+          "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('sqlAvailabilitySetName'))]"
+        },
+        "osProfile": {
+          "computerName": "[concat(variables('sqlNamePrefix'), copyindex())]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[parameters('windowsImagePublisher')]",
+            "offer": "[parameters('windowsImageOffer')]",
+            "sku": "[parameters('windowsImageSKU')]",
+            "version": "[parameters('windowsImageVersion')]"
+          },
+          "osDisk": {
+            "name": "[concat(variables('sqlNamePrefix'), copyindex(), '-osdisk.vhd')]",
+            "vhd": {
+              "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/',variables('sqlStorageAccountPrefix'),copyIndex()),variables('apiVersionStorage')).primaryEndpoints.blob, variables('vmContainerName'), '/', variables('sqlNamePrefix'), copyindex(), '-osdisk.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          },
+          "dataDisks": [
+            {
+              "vhd": {
+                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/',variables('sqlStorageAccountPrefix'),copyIndex()),variables('apiVersionStorage')).primaryEndpoints.blob, variables('vmContainerName'), '/', variables('sqlNamePrefix'), copyindex(), '-datadisk1.vhd')]"
+              },
+              "name": "[concat(variables('sqlNamePrefix'), copyindex(), '-datadisk1.vhd')]",
+              "caching": "None",
+              "createOption": "Empty",
+              "diskSizeGB": "[variables('sqlDiskSize')]",
+              "lun": 0
+            },
+            {
+              "vhd": {
+                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/',variables('sqlStorageAccountPrefix'),copyIndex()),variables('apiVersionStorage')).primaryEndpoints.blob, variables('vmContainerName'), '/', variables('sqlNamePrefix'), copyindex(), '-logdisk1.vhd')]"
+              },
+              "name": "[concat(variables('sqlNamePrefix'), copyindex(), '-logdisk1.vhd')]",
+              "caching": "None",
+              "createOption": "Empty",
+              "diskSizeGB": "[variables('sqlDiskSize')]",
+              "lun": 1
+            }
+          ]
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('sqlNamePrefix'), copyindex(), '-nic'))]"
+            }
+          ]
+        }
+      },
+      "resources": [
+        {
+          "name": "[concat(variables('sqlNamePrefix'), copyindex(),'/Microsoft.Powershell.DSC')]",
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "2016-04-30-preview",
+          "dependsOn": [
+            "[concat(variables('sqlNamePrefix'), copyindex())]",
+            "virtualMachineLoop"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Powershell",
+            "type": "DSC",
+            "typeHandlerVersion": "2.20",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "configuration": {
+                "url": "[variables('modulseUrl')]",
+                "script": "[variables('configurationScript')]",
+                "function": "[variables('configurationFunction')]"
+              },
+              "configurationArguments": {
+                "RegistrationKey": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
+                "RegistrationUrl": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
+                "NodeConfigurationName": "EEJoinProdDomain.localhost",
+                "ConfigurationMode": "applyAndMonitor",
+                "ConfigurationModeFrequencyMins": "15",
+                "RefreshFrequencyMins": "30",
+                "RebootNodeIfNeeded": false,
+                "ActionAfterReboot": "continueConfiguration",
+                "AllowModuleOverwrite": false,
+                "Timestamp": "7/05/2017 1:28:18 AM"
+              }
+            },
+            "protectedSettings": {
+            }
+          }
+        }
+      ]
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('sqlWitnessVMName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts',variables('sqlWitnessStorageAccountName'))]",
+        "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('sqlWitnessVMName'), '-nic'))]",
+        "[resourceId('Microsoft.Compute/availabilitySets', variables('sqlAvailabilitySetName'))]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('SqlWitnessVMSize')]"
+        },
+        "availabilitySet": {
+          "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('sqlAvailabilitySetName'))]"
+        },
+        "osProfile": {
+          "computerName": "[variables('sqlWitnessVMName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[parameters('windowsImagePublisher')]",
+            "offer": "[parameters('windowsImageOffer')]",
+            "sku": "[parameters('windowsImageSKU')]",
+            "version": "[parameters('windowsImageVersion')]"
+          },
+          "osDisk": {
+            "name": "[concat(variables('sqlWitnessVMName'), '-osdisk.vhd')]",
+            "vhd": {
+              "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/',variables('sqlWitnessStorageAccountName')),variables('apiVersionStorage')).primaryEndpoints.blob, variables('vmContainerName'), '/', variables('sqlWitnessVMName'), '-osdisk.vhd')]"
+            },
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          },
+          "dataDisks": [
+            {
+              "vhd": {
+                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/',variables('sqlWitnessStorageAccountName')),variables('apiVersionStorage')).primaryEndpoints.blob, variables('vmContainerName'), '/', variables('sqlWitnessVMName'), '-datadisk1.vhd')]"
+              },
+              "name": "[concat(variables('sqlWitnessVMName'), '-datadisk1.vhd')]",
+              "caching": "None",
+              "createOption": "Empty",
+              "diskSizeGB": "[variables('sqlWitnessDiskSize')]",
+              "lun": 0
+            }
+          ]
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('sqlWitnessVMName'), '-nic'))]"
+            }
+          ]
+        }
+      },
+      "resources": [
+        {
+          "name": "[Concat(variables('sqlWitnessVMName'),'/Microsoft.Powershell.DSC')]",
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "location": "[resourceGroup().location]",
+          "apiVersion": "2016-03-30",
+          "dependsOn": [
+            "[variables('sqlWitnessVMName')]"
+          ],
+          "properties": {
+            "publisher": "Microsoft.Powershell",
+            "type": "DSC",
+            "typeHandlerVersion": "2.20",
+            "autoUpgradeMinorVersion": true,
+            "settings": {
+              "configuration": {
+                "url": "[variables('modulseUrl')]",
+                "script": "[variables('configurationScript')]",
+                "function": "[variables('configurationFunction')]"
+              },
+              "configurationArguments": {
+                "RegistrationKey": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
+                "RegistrationUrl": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
+                "NodeConfigurationName": "EEJoinProdDomain.localhost",
+                "ConfigurationMode": "applyAndMonitor",
+                "ConfigurationModeFrequencyMins": "15",
+                "RefreshFrequencyMins": "30",
+                "RebootNodeIfNeeded": false,
+                "ActionAfterReboot": "continueConfiguration",
+                "AllowModuleOverwrite": false,
+                "domainName": "[parameters('domainName')]",
+                "sharePath": "[Variables('sqlWitnessSharePath')]"
+              }
+            },
+            "protectedSettings": {
+            }
+          }
+        }
+      ]
+    }
 	],
 	"outputs": {}
 }
