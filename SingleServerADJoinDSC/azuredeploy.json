@@ -339,7 +339,7 @@
                 "RegistrationKey": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
                 "RegistrationUrl": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
                 "NodeConfigurationName": "RemoteDesktopSingleServer.localhost",
-                "ConfigurationMode": "apply",
+                "ConfigurationMode": "ApplyOnly",
                 "ConfigurationModeFrequencyMins": "15",
                 "RefreshFrequencyMins": "30",
                 "RebootNodeIfNeeded": false,
