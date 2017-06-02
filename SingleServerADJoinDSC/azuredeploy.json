@@ -79,7 +79,6 @@
   "variables": {
     "adVnet-id": "[resourceId(parameters('adVnetRG'), 'Microsoft.Network/virtualNetworks', parameters('adVnetName'))]",
     "assetLocation": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/SingleServerADJoinDSC/",
-    "brokerIpRef": "brokerpublicIp",
     "cbdnsLabelPrefix": "[concat('cbd', resourceGroup().name)]",
     "gatewayIpRef": "gatewaypublicIp",
     "gwdnsLabelPrefix": "[concat('gwd', resourceGroup().name)]",
@@ -105,6 +104,18 @@
         "publicIPAllocationMethod": "Dynamic",
         "dnsSettings": {
           "domainNameLabel": "[variables('gwdnsLabelPrefix')]"
+        }
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('publicIpRef')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic",
+        "dnsSettings": {
+          "domainNameLabel": "[parameters('dnsLabelPrefix')]"
         }
       }
     },
@@ -312,7 +323,7 @@
           "type": "Microsoft.Compute/virtualMachines/extensions",
           "location": "[resourceGroup().location]",
           "apiVersion": "2016-04-30-preview",
-          "dependsOn": ["[resourceId('Microsoft.Compute/virtualMachines', 'gw-vm')]"],
+          "dependsOn": [ "[resourceId('Microsoft.Compute/virtualMachines', 'gw-vm')]" ],
           "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
