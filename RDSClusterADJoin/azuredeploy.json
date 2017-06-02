@@ -100,7 +100,8 @@
     "uniqueStorageAccountContainerName": "[concat('sac', resourceGroup().name)]",
     "modulseUrl": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/RDSClusterADJoin/UpdateLCMforAAPull.zip",
     "configurationScript": "UpdateLCMforAAPull.ps1",
-    "configurationFunction": "ConfigureLCMforAAPull"
+    "configurationFunction": "ConfigureLCMforAAPull",
+    "RDSCollectionName":  "RemoteDeskTop"
   },
   "resources": [
     {
@@ -356,6 +357,7 @@
       }
     },
     {
+      "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2016-04-30-preview",
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
@@ -406,7 +408,7 @@
           "type": "Microsoft.Compute/virtualMachines/extensions",
           "location": "[resourceGroup().location]",
           "apiVersion": "2016-04-30-preview",
-          "dependsOn": ["[resourceId('Microsoft.Compute/virtualMachines', 'gw-vm')]"],
+          "dependsOn": [ "[resourceId('Microsoft.Compute/virtualMachines', 'gw-vm')]" ],
           "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
@@ -421,22 +423,28 @@
               "configurationArguments": {
                 "RegistrationKey": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
                 "RegistrationUrl": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
-                "NodeConfigurationName": "EEJoinProdDomain.localhost",
+                "NodeConfigurationName": "RemoteDesktopClusterDeploy.localhost",
                 "ConfigurationMode": "applyAndMonitor",
                 "ConfigurationModeFrequencyMins": "15",
                 "RefreshFrequencyMins": "30",
                 "RebootNodeIfNeeded": false,
                 "ActionAfterReboot": "continueConfiguration",
                 "AllowModuleOverwrite": false,
-                "Timestamp": "7/05/2017 1:28:18 AM"
+                "Timestamp": "7/05/2017 1:28:18 AM",
+                "collectionName": "[variables('RDSCollectionName')]",
+                "connectionBroker": "[concat('broker.',parameters('adDomainName'))]",
+                "domainName": "[parameters('adDomainName')]",
+                "externalfqdn": "[concat('gateway.',parameters('adDomainName'))]",
+                "numberOfRdshInstances": "[parameters('numberOfRdshInstances')]",
+                "sessionHostNamingPrefix": "rdsh-",
+                "webAccessServer": "[concat('gateway.',parameters('adDomainName'))]"
               }
             },
             "protectedSettings": {
             }
           }
         }
-      ],
-      "type": "Microsoft.Compute/virtualMachines"
+      ]
     },
     {
       "apiVersion": "2016-04-30-preview",
@@ -512,14 +520,21 @@
               "configurationArguments": {
                 "RegistrationKey": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
                 "RegistrationUrl": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
-                "NodeConfigurationName": "EEJoinProdDomain.localhost",
+                "NodeConfigurationName": "RemoteDesktopClusterDeploy.localhost",
                 "ConfigurationMode": "applyAndMonitor",
                 "ConfigurationModeFrequencyMins": "15",
                 "RefreshFrequencyMins": "30",
                 "RebootNodeIfNeeded": false,
                 "ActionAfterReboot": "continueConfiguration",
                 "AllowModuleOverwrite": false,
-                "Timestamp": "7/05/2017 1:28:18 AM"
+                "Timestamp": "7/05/2017 1:28:18 AM",
+                "collectionName": "[variables('RDSCollectionName')]",
+                "connectionBroker": "[concat('broker.',parameters('adDomainName'))]",
+                "domainName": "[parameters('adDomainName')]",
+                "externalfqdn": "[concat('gateway.',parameters('adDomainName'))]",
+                "numberOfRdshInstances": "[parameters('numberOfRdshInstances')]",
+                "sessionHostNamingPrefix": "rdsh-",
+                "webAccessServer": "[concat('gateway.',parameters('adDomainName'))]"
               }
             },
             "protectedSettings": {
@@ -599,7 +614,7 @@
               "configurationArguments": {
                 "RegistrationKey": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
                 "RegistrationUrl": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
-                "NodeConfigurationName": "EEJoinProdDomain.localhost",
+                "NodeConfigurationName": "RemoteDesktopClusterDeploy.localhost",
                 "ConfigurationMode": "applyAndMonitor",
                 "ConfigurationModeFrequencyMins": "15",
                 "RefreshFrequencyMins": "30",
@@ -612,7 +627,8 @@
                 "externalfqdn": "[concat('gateway.',parameters('adDomainName'))]",
                 "numberOfRdshInstances": "[parameters('numberOfRdshInstances')]",
                 "sessionHostNamingPrefix": "rdsh-",
-                "webAccessServer": "[concat('gateway.',parameters('adDomainName'))]"
+                "webAccessServer": "[concat('gateway.',parameters('adDomainName'))]",
+                "collectionName": "[variables('RDSCollectionName')]"
               }
             },
             "protectedSettings": {
