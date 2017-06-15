@@ -423,21 +423,14 @@
               "configurationArguments": {
                 "RegistrationKey": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
                 "RegistrationUrl": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
-                "NodeConfigurationName": "RemoteDesktopServicesDeploy.localhost",
+                "NodeConfigurationName": "RemoteDesktopServicesGateway.localhost",
                 "ConfigurationMode": "ApplyOnly",
                 "ConfigurationModeFrequencyMins": "15",
                 "RefreshFrequencyMins": "30",
                 "RebootNodeIfNeeded": false,
                 "ActionAfterReboot": "continueConfiguration",
                 "AllowModuleOverwrite": false,
-                "Timestamp": "7/05/2017 1:28:18 AM",
-                "collectionName": "[variables('RDSCollectionName')]",
-                "connectionBroker": "[concat('broker.',parameters('adDomainName'))]",
-                "domainName": "[parameters('adDomainName')]",
-                "externalfqdn": "[concat('gateway.',parameters('adDomainName'))]",
-                "numberOfRdshInstances": "[parameters('numberOfRdshInstances')]",
-                "sessionHostNamingPrefix": "rdsh-",
-                "webAccessServer": "[concat('gateway.',parameters('adDomainName'))]"
+                "domainName": "[parameters('adDomainName')]"
               }
             },
             "protectedSettings": {
@@ -520,21 +513,19 @@
               "configurationArguments": {
                 "RegistrationKey": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
                 "RegistrationUrl": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
-                "NodeConfigurationName": "RemoteDesktopServicesDeploy.localhost",
+                "NodeConfigurationName": "RemoteDesktopServicesSessionHost.localhost",
                 "ConfigurationMode": "ApplyOnly",
                 "ConfigurationModeFrequencyMins": "15",
                 "RefreshFrequencyMins": "30",
                 "RebootNodeIfNeeded": false,
                 "ActionAfterReboot": "continueConfiguration",
                 "AllowModuleOverwrite": false,
-                "Timestamp": "7/05/2017 1:28:18 AM",
                 "collectionName": "[variables('RDSCollectionName')]",
                 "connectionBroker": "[concat('broker.',parameters('adDomainName'))]",
                 "domainName": "[parameters('adDomainName')]",
-                "externalfqdn": "[concat('gateway.',parameters('adDomainName'))]",
-                "numberOfRdshInstances": "[parameters('numberOfRdshInstances')]",
-                "sessionHostNamingPrefix": "rdsh-",
+                "SessionHostName": "[concat('rdsh-', copyindex(), '/Microsoft.Powershell.DSC')]",
                 "webAccessServer": "[concat('gateway.',parameters('adDomainName'))]"
+                "CollectionDescription": "RDS Deployment in Azure"
               }
             },
             "protectedSettings": {
@@ -614,21 +605,11 @@
               "configurationArguments": {
                 "RegistrationKey": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
                 "RegistrationUrl": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
-                "NodeConfigurationName": "RemoteDesktopServicesDeploy.localhost",
+                "NodeConfigurationName": "RemoteDesktopServicesBroker.localhost",
                 "ConfigurationMode": "ApplyOnly",
                 "ConfigurationModeFrequencyMins": "15",
                 "RefreshFrequencyMins": "30",
-                "RebootNodeIfNeeded": false,
-                "ActionAfterReboot": "continueConfiguration",
-                "AllowModuleOverwrite": false,
-                "Timestamp": "7/05/2017 1:28:18 AM",
-                "connectionBroker": "[concat('broker.',parameters('adDomainName'))]",
-                "domainName": "[parameters('adDomainName')]",
-                "externalfqdn": "[concat('gateway.',parameters('adDomainName'))]",
-                "numberOfRdshInstances": "[parameters('numberOfRdshInstances')]",
-                "sessionHostNamingPrefix": "rdsh-",
-                "webAccessServer": "[concat('gateway.',parameters('adDomainName'))]",
-                "collectionName": "[variables('RDSCollectionName')]"
+                "domainName": "[parameters('adDomainName')]"
               }
             },
             "protectedSettings": {
