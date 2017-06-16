@@ -101,7 +101,8 @@
     "modulseUrl": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/RDSClusterADJoin/UpdateLCMforAAPull.zip",
     "configurationScript": "UpdateLCMforAAPull.ps1",
     "configurationFunction": "ConfigureLCMforAAPull",
-    "RDSCollectionName":  "RemoteDeskTop"
+    "RDSCollectionName": "RemoteDeskTop",
+    "RDSCollectionDesc": "Remote Desktop Session in Azure"
   },
   "resources": [
     {
@@ -524,8 +525,8 @@
                 "connectionBroker": "[concat('broker.',parameters('adDomainName'))]",
                 "domainName": "[parameters('adDomainName')]",
                 "SessionHostName": "[concat('rdsh-', copyindex(), '/Microsoft.Powershell.DSC')]",
-                "webAccessServer": "[concat('gateway.',parameters('adDomainName'))]"
-                "CollectionDescription": "RDS Deployment in Azure"
+                "webAccessServer": "[concat('gateway.',parameters('adDomainName'))]",
+                "CollectionDescription": "[variables('RDSCollectionDesc')]"
               }
             },
             "protectedSettings": {
@@ -620,10 +621,3 @@
     }
   ]
 }
-     
-
-   
-
-
-   
- 
