@@ -525,8 +525,7 @@
                 "connectionBroker": "[concat('broker.',parameters('adDomainName'))]",
                 "domainName": "[parameters('adDomainName')]",
                 "SessionHostName": "[concat('rdsh-', copyindex(), '/Microsoft.Powershell.DSC')]",
-                "webAccessServer": "[concat('gateway.',parameters('adDomainName'))]",
-                "CollectionDescription": "[variables('RDSCollectionDesc')]"
+                "webAccessServer": "[concat('gateway.',parameters('adDomainName'))]"
               }
             },
             "protectedSettings": {
