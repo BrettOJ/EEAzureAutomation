@@ -87,7 +87,7 @@
     "publicIpRef": "publicIp",
     "adVNETSubnet1Name": "adSubnet",
     "subnet-id": "[concat(variables('adVnet-id'),'/subnets/',variables('adVNETSubnet1Name'))]",
-    "storageAccountName": "[tolower(concat('rdsa', uniqueString(resourceGroup().id)))]",
+    "storageAccountName": "[tolower(concat('sqla', uniqueString(resourceGroup().id)))]",
     "storageAccountType": "Standard_LRS",
     "uniqueStorageAccountContainerName": "[concat('sac', resourceGroup().name)]",
     "modulseUrl": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/SQLClusterDSCADJoin/UpdateLCMforAAPull.zip",
@@ -284,7 +284,7 @@
       "name": "[concat('sql-', copyindex(), '-nic')]",
       "location": "[resourceGroup().location]",
       "copy": {
-        "name": "rdsh-nic-loop",
+        "name": "sql-nic-loop",
         "count": "[parameters('numberOfSQLInstances')]"
       },
       "dependsOn": [
@@ -393,23 +393,23 @@
       "name": "[concat('sql-', copyindex())]",
       "location": "[resourceGroup().location]",
       "copy": {
-        "name": "rdsh-vm-loop",
+        "name": "sql-vm-loop",
         "count": "[parameters('numberOfSQLInstances')]"
       },
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-        "[resourceId('Microsoft.Compute/availabilitySets', 'rdsh-availabilityset')]",
-        "[concat('Microsoft.Network/networkInterfaces/', 'rdsh-', copyindex(), '-nic')]"
+        "[resourceId('Microsoft.Compute/availabilitySets', 'sql-availabilityset')]",
+        "[concat('Microsoft.Network/networkInterfaces/', 'sql-', copyindex(), '-nic')]"
       ],
       "properties": {
         "hardwareProfile": {
           "vmSize": "[parameters('SQLVmSize')]"
         },
         "availabilitySet": {
-          "id": "[resourceId('Microsoft.Compute/availabilitySets', 'rdsh-availabilityset')]"
+          "id": "[resourceId('Microsoft.Compute/availabilitySets', 'sql-availabilityset')]"
         },
         "osProfile": {
-          "computerName": "[concat('rdsh-', copyIndex())]",
+          "computerName": "[concat('sql-', copyIndex())]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]"
         },
@@ -423,7 +423,7 @@
           "osDisk": {
             "name": "osdisk",
             "vhd": {
-              "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')),providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob,variables('uniqueStorageAccountContainerName'),'/','rdsh-',copyindex(),'-os-disk.vhd')]"
+              "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')),providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob,variables('uniqueStorageAccountContainerName'),'/','sql-',copyindex(),'-os-disk.vhd')]"
 
             },
             "caching": "ReadWrite",
@@ -433,7 +433,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat('rdsh-', copyindex(), '-nic'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat('sql-', copyindex(), '-nic'))]"
             }
           ]
         }
@@ -445,7 +445,7 @@
           "location": "[resourceGroup().location]",
           "apiVersion": "2016-04-30-preview",
           "dependsOn": [
-            "[concat('Microsoft.Compute/virtualMachines/', 'rdsh-', copyindex())]"
+            "[concat('Microsoft.Compute/virtualMachines/', 'sql-', copyindex())]"
           ],
           "properties": {
             "publisher": "Microsoft.Powershell",
