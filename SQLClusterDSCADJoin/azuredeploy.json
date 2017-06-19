@@ -82,7 +82,7 @@
     "sqldnsLabelPrefix": "[concat('sql', resourceGroup().name)]",
     "sqlIpRef": "sqlpublicIp",
     "sqlwtdnsLabelPrefix": "[concat('sqlwt', resourceGroup().name)]",
-    "imageOffer": "SQL2016-WS2016",
+    "imageOffer": "SQL2016SP1-WS2016",
     "imagePublisher": "MicrosoftSQLServer",
     "publicIpRef": "publicIp",
     "adVNETSubnet1Name": "adSubnet",
@@ -315,7 +315,7 @@
       "name": "sqlwt-vm",
       "properties": {
         "hardwareProfile": {
-          "vmSize": "Standard_A2"
+          "vmSize": "[parameters('SQLVmSize')]"
         },
         "availabilitySet": {
           "id": "[resourceId('Microsoft.Compute/availabilitySets', 'sqlwt-availabilityset')]"
