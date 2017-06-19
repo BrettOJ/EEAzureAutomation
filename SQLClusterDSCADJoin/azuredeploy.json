@@ -92,7 +92,9 @@
     "uniqueStorageAccountContainerName": "[concat('sac', resourceGroup().name)]",
     "modulseUrl": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/SQLClusterDSCADJoin/UpdateLCMforAAPull.zip",
     "configurationScript": "UpdateLCMforAAPull.ps1",
-    "configurationFunction": "ConfigureLCMforAAPull"
+    "configurationFunction": "ConfigureLCMforAAPull",
+    "AutomationRegURL": "https://ase-agentservice-prod-1.azure-automation.net/accounts/b2f318ad-5d64-4a5b-88e4-7f73ace76b90",
+    "AutomationRegKey": "inyizqK08IVG9UAV95Xjokbdp0WcTsEIr3dfxXjR3IGhCPdFW218cL9AcRiO04slUJpgpSnGpzLpyOTokv3zHA=="
   },
   "resources": [
     {
@@ -368,16 +370,15 @@
                 "function": "[variables('configurationFunction')]"
               },
               "configurationArguments": {
-                "RegistrationKey": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
-                "RegistrationUrl": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
+                "RegistrationKey": "[variables('AutomationRegKey')]",
+                "RegistrationUrl": "[variables('AutomationRegURL')]",
                 "NodeConfigurationName": "EEJoinProdDomain.localhost",
                 "ConfigurationMode": "applyAndMonitor",
                 "ConfigurationModeFrequencyMins": "15",
                 "RefreshFrequencyMins": "30",
                 "RebootNodeIfNeeded": false,
                 "ActionAfterReboot": "continueConfiguration",
-                "AllowModuleOverwrite": false,
-                "Timestamp": "7/05/2017 1:28:18 AM"
+                "AllowModuleOverwrite": false
               }
             },
             "protectedSettings": {
@@ -459,16 +460,15 @@
                 "function": "[variables('configurationFunction')]"
               },
               "configurationArguments": {
-                "RegistrationKey": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
-                "RegistrationUrl": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
+                "RegistrationKey": "[variables('AutomationRegKey')]",
+                "RegistrationUrl": "[variables('AutomationRegURL')]",
                 "NodeConfigurationName": "EEJoinProdDomain.localhost",
                 "ConfigurationMode": "applyAndMonitor",
                 "ConfigurationModeFrequencyMins": "15",
                 "RefreshFrequencyMins": "30",
                 "RebootNodeIfNeeded": false,
                 "ActionAfterReboot": "continueConfiguration",
-                "AllowModuleOverwrite": false,
-                "Timestamp": "7/05/2017 1:28:18 AM"
+                "AllowModuleOverwrite": false
               }
             },
             "protectedSettings": {
