@@ -309,7 +309,7 @@
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
         "[resourceId('Microsoft.Compute/availabilitySets', 'sqlwt-availabilityset')]",
-        "Microsoft.Network/networkInterfaces/gw-nic"
+        "Microsoft.Network/networkInterfaces/sqlwt-nic"
       ],
       "location": "[resourceGroup().location]",
       "name": "sqlwt-vm",
