@@ -44,7 +44,7 @@
     },
     "imageSKU": {
       "type": "string",
-      "defaultValue": "Enterprise-Optimized-for-DW"
+      "defaultValue": "Enterprise"
     },
     "numberOfSQLInstances": {
       "type": "int",
@@ -73,7 +73,7 @@
       "metadata": {
         "description": "The size of the SQL Server VMs"
       },
-      "defaultValue": "Standard_A4"
+      "defaultValue": "Standard_D4"
     }
   },
   "variables": {
@@ -82,7 +82,7 @@
     "sqldnsLabelPrefix": "[concat('sql', resourceGroup().name)]",
     "sqlIpRef": "sqlpublicIp",
     "sqlwtdnsLabelPrefix": "[concat('sqlwt', resourceGroup().name)]",
-    "imageOffer": "SQL2014SP1-WS2012R2",
+    "imageOffer": "SQL2016-WS2016",
     "imagePublisher": "MicrosoftSQLServer",
     "publicIpRef": "publicIp",
     "adVNETSubnet1Name": "adSubnet",
