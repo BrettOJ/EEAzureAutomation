@@ -24,7 +24,7 @@
       "type": "string",
       "metadata": {
         "description": "VM admin user name"
-      }
+      },
       "defaultValue": "bojadmin"
     },
     "vmAdminPassword": {
@@ -248,7 +248,7 @@
       "name": "[parameters('vmName')]",
       "type": "Microsoft.Compute/virtualMachines",
       "location": "[resourceGroup().location]",
-      "apiVersion": "2017-03-30",
+      "apiVersion": "2016-04-30-preview",
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', variables('storageName'))]",
         "[concat('Microsoft.Network/networkInterfaces/', variables('vmNicName'))]"
