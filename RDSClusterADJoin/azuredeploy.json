@@ -105,8 +105,8 @@
     "RDSCollectionDesc": "Remote Desktop Session in Azure",
     "AutomationRegURL": "https://ase-agentservice-prod-1.azure-automation.net/accounts/b2f318ad-5d64-4a5b-88e4-7f73ace76b90",
     "AutomationRegKey": "inyizqK08IVG9UAV95Xjokbdp0WcTsEIr3dfxXjR3IGhCPdFW218cL9AcRiO04slUJpgpSnGpzLpyOTokv3zHA==",
-    "certificateUrl": "https://bojvault.vault.azure.net:443/secrets/bojSecret/a0c56c72d7de44608d2501f96a5d8346",
-    "vaultResourceGroup": "BOJ-TESTVM-rg",
+    "certificateUrl": "https://bojvault.vault.azure.net:443/secrets/bojSecret/d23960593aa447fa89bed347f75464a6",
+    "vaultResourceGroup": "boj-key-vault-rg",
     "vaultName": "bojVault"
   },
   "resources": [
