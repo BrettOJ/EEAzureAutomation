@@ -497,7 +497,35 @@
         "osProfile": {
           "computerName": "[concat('rdsh-', copyIndex())]",
           "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPassword')]"
+          "adminPassword": "[parameters('adminPassword')]",
+          "secrets": [
+            {
+              "sourceVault": {
+                "id": "[resourceId(variables('vaultResourceGroup'), 'Microsoft.KeyVault/vaults', variables('vaultName'))]"
+              },
+              "vaultCertificates": [
+                {
+                  "certificateUrl": "[Variables('certificateUrl')]",
+                  "certificateStore": "My"
+                }
+              ]
+            }
+          ],
+          "windowsConfiguration": {
+            "provisionVMAgent": "true",
+            "winRM": {
+              "listeners": [
+                {
+                  "protocol": "http"
+                },
+                {
+                  "protocol": "https",
+                  "certificateUrl": "[variables('certificateUrl')]"
+                }
+              ]
+            },
+            "enableAutomaticUpdates": "true"
+          }
         },
         "storageProfile": {
           "imageReference": {
@@ -589,7 +617,35 @@
         "osProfile": {
           "computerName": "broker",
           "adminUsername": "[parameters('adminUsername')]",
-          "adminPassword": "[parameters('adminPassword')]"
+          "adminPassword": "[parameters('adminPassword')]",
+          "secrets": [
+            {
+              "sourceVault": {
+                "id": "[resourceId(variables('vaultResourceGroup'), 'Microsoft.KeyVault/vaults', variables('vaultName'))]"
+              },
+              "vaultCertificates": [
+                {
+                  "certificateUrl": "[Variables('certificateUrl')]",
+                  "certificateStore": "My"
+                }
+              ]
+            }
+          ],
+          "windowsConfiguration": {
+            "provisionVMAgent": "true",
+            "winRM": {
+              "listeners": [
+                {
+                  "protocol": "http"
+                },
+                {
+                  "protocol": "https",
+                  "certificateUrl": "[variables('certificateUrl')]"
+                }
+              ]
+            },
+            "enableAutomaticUpdates": "true"
+          }
         },
         "storageProfile": {
           "imageReference": {
