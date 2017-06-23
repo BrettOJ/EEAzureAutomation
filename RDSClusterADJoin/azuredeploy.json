@@ -625,7 +625,7 @@
               },
               "vaultCertificates": [
                 {
-                  "certificateUrl": "[Variables('certificateUrl')]",
+                  "certificateUrl": "https://bojvault.vault.azure.net:443/secrets/cb-vm-Certificate/75ca15d0a39a4193bab808b42319d26b",
                   "certificateStore": "My"
                 }
               ]
