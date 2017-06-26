@@ -625,7 +625,7 @@
               },
               "vaultCertificates": [
                 {
-                  "certificateUrl": "https://bojvault.vault.azure.net:443/secrets/cb-vm-Certificate/75ca15d0a39a4193bab808b42319d26b",
+                  "certificateUrl": "https://bojvault.vault.azure.net:443/secrets/Broker-Cert/b51b1f1daa7b4db3a713bce16fa99805",
                   "certificateStore": "My"
                 }
               ]
@@ -640,7 +640,7 @@
                 },
                 {
                   "protocol": "https",
-                  "certificateUrl": "https://bojvault.vault.azure.net:443/secrets/cb-vm-Certificate/75ca15d0a39a4193bab808b42319d26b"
+                  "certificateUrl": "https://bojvault.vault.azure.net:443/secrets/Broker-Cert/b51b1f1daa7b4db3a713bce16fa99805"
                 }
               ]
             },
