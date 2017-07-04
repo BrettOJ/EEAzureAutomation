@@ -1,0 +1,7 @@
+{
+  "itemDisplayName": "Windows Server 2016 VM Deployment",
+  "description": "This template creates a Windows based VM. It creates the VM in a new vnet, storage account, nic, and public ip with the new compute stack.",
+  "summary": "Creates a Windows Server VM.",
+  "githubUsername": "BrettOJ",
+  "dateUpdated": "2017-05-2"
+}

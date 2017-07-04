@@ -1,0 +1,361 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "namePrefix": {
+      "type": "string",
+      "maxLength": 8,
+      "metadata": {
+        "description": "Naming prefix for each new resource created. 8-char max, lowercase alphanumeric"
+      }
+    },
+    "storageAccountType": {
+      "type": "string",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Premium_LRS"
+      ],
+      "metadata": {
+        "description": "Type of new Storage Accounts (Standard_LRS, Standard_GRS, Standard_RAGRS or Premium_LRS) to be created to store VM disks"
+      },
+      "defaultValue": "Premium_LRS"
+    },
+    "sqlVMSize": {
+      "type": "string",
+      "allowedValues": [
+        "Standard_A0",
+        "Standard_A1",
+        "Standard_A2",
+        "Standard_A3",
+        "Standard_A4",
+        "Standard_A5",
+        "Standard_A6",
+        "Standard_A7",
+        "Standard_D1",
+        "Standard_D2",
+        "Standard_D3",
+        "Standard_D4",
+        "Standard_D5"
+      ],
+      "metadata": {
+        "description": "Size of the SQL VMs to be created"
+      },
+      "defaultValue": "Standard_A4"
+    },
+    "sqlWitnessVMSize": {
+      "type": "string",
+      "allowedValues": [
+        "Standard_A0",
+        "Standard_A1",
+        "Standard_A2",
+        "Standard_A3",
+        "Standard_A4",
+        "Standard_A5",
+        "Standard_A6",
+        "Standard_A7",
+        "Standard_D1",
+        "Standard_D2",
+        "Standard_D3",
+        "Standard_D4",
+        "Standard_D5"
+      ],
+      "metadata": {
+        "description": "Size of the Witness VM to be created"
+      },
+      "defaultValue": "Standard_A2"
+    },
+    "DomainName": {
+      "type": "string",
+      "metadata": {
+        "description": "DNS domain name for existing Active Directory domain"
+      },
+      "defaultValue": "corp.net.au"
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Administrator of the existing Active Directory Domain"
+      }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for the Administrator account of the existing Active Directory Domain"
+      }
+    },
+    "sqlServerServiceAccountUserName": {
+      "type": "string",
+      "metadata": {
+        "description": "The SQL Server Service account name"
+      },
+      "defaultValue": "sqlsvc"
+    },
+    "sqlServerServiceAccountPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The SQL Server Service account password"
+      }
+    },
+    "existingVirtualNetworkId": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource ID of the existing VNET. You can find the Resource ID for the VNET on the Properties blade of the VNET."
+      },
+      "defaultValue": "/subscriptions/e81fd02b-f607-406c-83d2-670ce0497fee/resourceGroups/EECorpDomain/providers/Microsoft.Network/virtualNetworks/adVNET"
+    },
+    "existingSqlSubnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the existing subnet in the existing VNET to which the SQL & Witness VMs should be deployed"
+      },
+      "defaultValue": "sqlsubnet"
+    },
+    "existingAdPDCVMName": {
+      "type": "string",
+      "maxLength": 15,
+      "metadata": {
+        "description": "Computer name of the existing Primary AD domain controller & DNS server"
+      }
+    },
+    "sqlLBIPAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "IP address of ILB for the SQL Server AlwaysOn listener to be created"
+      },
+      "defaultValue": "10.0.1.10"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Location of resources that the script is dependent on such as linked templates and DSC modules"
+      },
+      "defaultValue": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/SQLServerClusterADJoin"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+      },
+      "defaultValue": ""
+    }
+  },
+  "variables": {
+    "dnsServerName": "[parameters('existingAdPDCVMName')]",
+    "sqlSubnetRef": "[concat(parameters('existingVirtualNetworkId'),'/subnets/',parameters('existingSqlSubnetName'))]",
+    "deploySqlClusterTemplateURL": "[concat(parameters('_artifactsLocation'),'/nested/deploy-sql-cluster.json',parameters('_artifactsLocationSasToken'))]",
+    "deploySqlCluster": "deploySqlCluster",
+    "nicSubnetUri": "[variables('sqlSubnetRef')]",
+    "lbSubnetUri": "[variables('sqlSubnetRef')]",
+    "windowsImagePublisher": "MicrosoftSQLServer",
+    "windowsImageOffer": "SQL2012SP3-WS2012R2",
+    "windowsImageVersion": "latest",
+    "windowsImageSKU": "Standard",
+    "apiVersionStorage": "2015-06-15",
+    "sqlDiskSize": 1000,
+    "sqlWitnessDiskSize": 128,
+    "sqlNamePrefix": "[concat(parameters('namePrefix'),'-sql-')]",
+    "sqlAvailabilitySetName": "[concat(variables('sqlNamePrefix'),'as')]",
+    "sqlLBName": "[concat(variables('sqlNamePrefix'),'ilb')]",
+    "sqllbID": "[resourceId('Microsoft.Network/loadBalancers',variables('sqlLBName'))]",
+    "lbFE1": "[concat(variables('sqlNamePrefix'),'ilbfe1')]",
+    "lbBE": "[concat(variables('sqlNamePrefix'),'ilbbe')]",
+    "sqlLBID": "[resourceId('Microsoft.Network/loadBalancers',variables('sqlLBName'))]",
+    "sqlLBFEConfigID1": "[concat(variables('sqllbID'),'/frontendIPConfigurations/',variables('lbFE1'))]",
+    "sqlLBBEAddressPoolID": "[concat(variables('sqllbID'),'/backendAddressPools/',variables('lbBE'))]",
+    "sqlAOProbe1": "[concat(variables('sqlNamePrefix'),'ilbp1')]",
+    "sqlLBProbeID1": "[concat(variables('sqllbID'),'/probes/',variables('sqlAOProbe1'))]",
+    "sqlStorageAccountPrefix": "[concat(parameters('namePrefix'),take(uniqueString(resourceGroup().id),8),'sql')]",
+    "sqlWitnessStorageAccountName": "[concat(parameters('namePrefix'),take(uniqueString(resourceGroup().id),8),'wit')]",
+    "vmContainerName": "vhds",
+    "deploySqlWitnessShare": "deploySqlWitnessShare",
+    "deploySqlWitnessShareId": "[concat('Microsoft.Resources/deployments/', variables('deploySqlWitnessShare'))]",
+    "deploySqlWitnessShareTemplateUrl": "[concat(parameters('_artifactsLocation'),'/nested/deploy-sql-witness.json',parameters('_artifactsLocationSasToken'))]",
+    "sqlWitnessSharePath": "[concat(parameters('namePrefix'),'-fsw')]",
+    "sqlWitnessVMName": "[concat(variables('sqlNamePrefix'),'w')]",
+    "deploySqlAlwaysOn": "deploySqlAlwaysOn",
+    "deploySqlAlwaysOnTemplateUrl": "[concat(parameters('_artifactsLocation'),'/nested/deploy-sql-alwayson.json',parameters('_artifactsLocationSasToken'))]",
+    "sqlAOEPName": "[concat(parameters('namePrefix'),'-agep')]",
+    "sqlAOAGName1": "[concat(parameters('namePrefix'),'-ag1')]",
+    "sqlAOListener1": "[concat(parameters('namePrefix'),'-agl1')]",
+    "configurationScript": "UpdateLCMforAAPull.ps1",
+    "modulseUrl": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/SQLServerClusterADJoin/UpdateLCMforAAPull.zip",
+    "configurationFunction": "ConfigureLCMforAAPull"
+  },
+    "resources": [
+      {
+        "type": "Microsoft.Compute/availabilitySets",
+        "name": "[variables('sqlAvailabilitySetName')]",
+        "apiVersion": "2015-06-15",
+        "location": "[resourceGroup().location]",
+        "properties": {}
+      },
+      {
+        "type": "Microsoft.Storage/storageAccounts",
+        "name": "[concat(variables('sqlStorageAccountPrefix'), copyindex())]",
+        "apiVersion": "2015-06-15",
+        "copy": {
+          "name": "storageAccountLoop",
+          "count": 2
+        },
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "accountType": "[parameters('storageAccountType')]"
+        }
+      },
+      {
+        "type": "Microsoft.Storage/storageAccounts",
+        "name": "[variables('sqlWitnessStorageAccountName')]",
+        "apiVersion": "2015-06-15",
+        "location": "[resourceGroup().location]",
+        "properties": {
+          "accountType": "[parameters('storageAccountType')]"
+        }
+      },
+      {
+        "name": "[concat(variables('sqlNamePrefix'), copyindex(), '-nic')]",
+        "type": "Microsoft.Network/networkInterfaces",
+        "location": "[resourceGroup().location]",
+        "apiVersion": "2015-06-15",
+        "copy": {
+          "name": "nicLoop",
+          "count": 2
+        },
+        "dependsOn": [
+          "[variables('sqlLBID')]"
+        ],
+        "properties": {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "privateIPAllocationMethod": "Dynamic",
+                "subnet": {
+                  "id": "[variables('nicSubnetUri')]"
+                },
+                "loadBalancerBackendAddressPools": [
+                  {
+                    "id": "[variables('sqlLBBEAddressPoolID')]"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "apiVersion": "2015-06-15",
+        "type": "Microsoft.Compute/virtualMachines",
+        "name": "[concat(variables('sqlNamePrefix'), copyindex())]",
+        "location": "[resourceGroup().location]",
+        "copy": {
+          "name": "virtualMachineLoop",
+          "count": 2
+        },
+        "dependsOn": [
+          "[resourceId('Microsoft.Storage/storageAccounts',concat(variables('sqlStorageAccountPrefix'),  copyindex()))]",
+          "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('sqlNamePrefix'), copyindex(), '-nic'))]",
+          "[resourceId('Microsoft.Compute/availabilitySets', variables('sqlAvailabilitySetName'))]"
+        ],
+        "properties": {
+          "hardwareProfile": {
+            "vmSize": "[parameters('SqlVMSize')]"
+          },
+          "availabilitySet": {
+            "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('sqlAvailabilitySetName'))]"
+          },
+          "osProfile": {
+            "computerName": "[concat(variables('sqlNamePrefix'), copyindex())]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]"
+          },
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "[variables('windowsImagePublisher')]",
+              "offer": "[variables('windowsImageOffer')]",
+              "sku": "[variables('windowsImageSKU')]",
+              "version": "[variables('windowsImageVersion')]"
+            },
+            "osDisk": {
+              "name": "[concat(variables('sqlNamePrefix'), copyindex(), '-osdisk.vhd')]",
+              "vhd": {
+                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/',variables('sqlStorageAccountPrefix'),copyIndex()),variables('apiVersionStorage')).primaryEndpoints.blob, variables('vmContainerName'), '/', variables('sqlNamePrefix'), copyindex(), '-osdisk.vhd')]"
+              },
+              "caching": "ReadWrite",
+              "createOption": "FromImage"
+            },
+            "dataDisks": [
+              {
+                "vhd": {
+                  "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/',variables('sqlStorageAccountPrefix'),copyIndex()),variables('apiVersionStorage')).primaryEndpoints.blob, variables('vmContainerName'), '/', variables('sqlNamePrefix'), copyindex(), '-datadisk1.vhd')]"
+                },
+                "name": "[concat(variables('sqlNamePrefix'), copyindex(), '-datadisk1.vhd')]",
+                "caching": "None",
+                "createOption": "Empty",
+                "diskSizeGB": "[variables('sqlDiskSize')]",
+                "lun": 0
+              },
+              {
+                "vhd": {
+                  "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/',variables('sqlStorageAccountPrefix'),copyIndex()),variables('apiVersionStorage')).primaryEndpoints.blob, variables('vmContainerName'), '/', variables('sqlNamePrefix'), copyindex(), '-logdisk1.vhd')]"
+                },
+                "name": "[concat(variables('sqlNamePrefix'), copyindex(), '-logdisk1.vhd')]",
+                "caching": "None",
+                "createOption": "Empty",
+                "diskSizeGB": "[variables('sqlDiskSize')]",
+                "lun": 1
+              }
+            ]
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('sqlNamePrefix'), copyindex(), '-nic'))]"
+              }
+            ]
+          }
+        },
+        "resources": [
+          {
+            "name": "[concat(variables('sqlNamePrefix'), copyindex(),'/Microsoft.Powershell.DSC')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[resourceGroup().location]",
+            "apiVersion": "2016-04-30-preview",
+            "dependsOn": [
+              "[concat(variables('sqlNamePrefix'), copyindex())]",
+              "virtualMachineLoop"
+            ],
+            "properties": {
+              "publisher": "Microsoft.Powershell",
+              "type": "DSC",
+              "typeHandlerVersion": "2.20",
+              "autoUpgradeMinorVersion": true,
+              "settings": {
+                "configuration": {
+                  "url": "[variables('modulseUrl')]",
+                  "script": "[variables('configurationScript')]",
+                  "function": "[variables('configurationFunction')]"
+                },
+                "configurationArguments": {
+                  "RegistrationKey": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
+                  "RegistrationUrl": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
+                  "NodeConfigurationName": "EEJoinProdDomain.localhost",
+                  "ConfigurationMode": "applyAndMonitor",
+                  "ConfigurationModeFrequencyMins": "15",
+                  "RefreshFrequencyMins": "30",
+                  "RebootNodeIfNeeded": false,
+                  "ActionAfterReboot": "continueConfiguration",
+                  "AllowModuleOverwrite": false,
+                  "Timestamp": "7/05/2017 1:28:18 AM"
+                }
+              },
+              "protectedSettings": {
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "outputs": {}
+  }
