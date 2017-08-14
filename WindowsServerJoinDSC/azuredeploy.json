@@ -329,7 +329,7 @@
           "type": "Microsoft.Compute/virtualMachines/extensions",
           "location": "[resourceGroup().location]",
           "apiVersion": "2016-04-30-preview",
-          "dependsOn": "[concat('Microsoft.Compute/virtualMachines/', parameters('VMName'))]",
+          "dependsOn": "[resourceId('Microsoft.Compute/virtualMachines/', parameters('VMName'))]",
           "properties": {
             "autoUpgradeMinorVersion": true,
             "protectedSettings": {
