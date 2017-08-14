@@ -1,0 +1,56 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminPassword": {
+      "value": "GEN-PASSWORD"
+    },
+    "adminUsername": {
+      "value": "GEN-PASSWORD"
+    },
+    "VMName": {
+      "value": "VMName"
+    },
+    "VMRole": {
+      "value": "VMRole"
+    },
+    "DNSPrefix": {
+      "value": "DNSPrefix"
+    },
+    "VMImagePublisher": {
+      "value": "VMImagePublisher"
+    },
+    "VMPublisherOffer": {
+      "value": "VMPublisherOffer"
+    },
+    "VMPublisherOfferSku": {
+      "value": "VMPublisherOfferSku"
+    },
+    "vNetRG": {
+      "value": "vNetRG"
+    },
+    "vNetName": {
+      "value": "vNetName"
+    },
+    "VMSubnetID": {
+      "value": "VMSubnetID"
+    },
+    "VMSize": {
+      "value": "VMSize"
+    },
+    "NSG": {
+      "value": "NSG"
+    },
+    "VMInternalIP": {
+      "value": "VMInternalIP"
+    },
+    "platformUpdateDomainCount": {
+      "value": "platformUpdateDomainCount"
+    },
+    "platformFaultDomainCount": {
+      "value": "platformFaultDomainCount"
+    }
+  }
+}
+
+

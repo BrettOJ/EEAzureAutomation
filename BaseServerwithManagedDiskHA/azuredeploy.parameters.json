@@ -1,0 +1,100 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "southeastasia"
+    },
+    "virtualMachineName": {
+      "value": "TestVM"
+    },
+    "virtualMachineSize": {
+      "value": "Standard_DS11_v2"
+    },
+    "adminUsername": {
+      "value": "bojadmin"
+    },
+    "_virtualNetwork": {
+      "value": "new"
+    },
+    "virtualNetworkName": {
+      "value": "testvmrg-vnet"
+    },
+    "networkInterfaceName": {
+      "value": "testvm904"
+    },
+    "networkSecurityGroupName": {
+      "value": "TestVM-nsg"
+    },
+    "adminPassword": {
+      "value": null
+    },
+    "DiskPerformance": {
+      "value": "securestring"
+    },
+    "_availabilitySet": {
+      "value": "yes"
+    },
+    "availabilitySetName": {
+      "value": "TestAVAILSet"
+    },
+    "availabilitySetPlatformFaultDomainCount": {
+      "value": "2"
+    },
+    "availabilitySetPlatformUpdateDomainCount": {
+      "value": "5"
+    },
+    "diagnosticsStorageAccountName": {
+      "value": "testvmrgdiag182"
+    },
+    "diagnosticsStorageAccountType": {
+      "value": "Standard_LRS"
+    },
+    "diagnosticsStorageAccountId": {
+      "value": "Microsoft.Storage/storageAccounts/testvmrgdiag182"
+    },
+    "addressPrefix": {
+      "value": "10.1.0.0/24"
+    },
+    "subnetName": {
+      "value": "default"
+    },
+    "subnetPrefix": {
+      "value": "10.1.0.0/24"
+    },
+    "_publicIPAddress": {
+      "value": "yes"
+    },
+    "publicIpAddressName": {
+      "value": "TestVM-ip"
+    },
+    "publicIpAddressType": {
+      "value": "Dynamic"
+    },
+    "AutomationRegURL": {
+      "value": "string"
+    },
+    "AutomationRegKey": {
+      "value": "string"
+    },
+    "_DSCManagedNode": {
+      "value": "yes"
+    },
+    "DSCNodeRole": {
+      "value": "string"
+    },
+    "DSCModulesurl": {
+      "value": "string"
+    },
+    "DSCConfigurationFunction": {
+      "value": "string"
+    },
+
+    "_artifactsLocation": {
+      "value": "string"
+    },
+    "_artifactsLocationSasToken": {
+      "value": "securestring"
+    }
+  }
+}

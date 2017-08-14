@@ -1,0 +1,55 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmName": {
+      "value": "VMNAme"
+    },
+    "VMImage": {
+      "value": "VMImage"
+    },
+    "AdminUserName": {
+      "value": "AdminUserName"
+    },
+    "AdminPassword": {
+      "value": "GEN-PASSWORD"
+    },
+    "VMDiskType": {
+      "value": "VMDiskType"
+    },
+    "SubscriptionID": {
+      "value": "SubscriptionID"
+    },
+    "ResourceGroup": {
+      "value": "ResourceGroup"
+    },
+    "Location": {
+      "value": "Location"
+    },
+    "VMsize": {
+      "value": "VMsize"
+    },
+    "StorageAccount": {
+      "value": "StorageAccount"
+    },
+    "VirtualNetwork": {
+      "value": "VirtualNetwork"
+    },
+    "SubnetID": {
+      "value": "SubnetID"
+    },
+    "PublicIP": {
+      "value": "VMNAme"
+      }
+    },
+
+    "dnsLabelPrefix": {
+      "value": "GEN-UNIQUE-13"
+    },
+    "vmAdminUserName": {
+      "value": "YourAdminName"
+    },
+    "vmOSVersion": {
+      "value": "2012-R2-Datacenter"
+    }
+  } }        CPU Mem  Perfomance Replication   PublicIP NSG Extensions Availability updatedomains faultdomains diagnostics diagnosticsstorageaccount DNS InternalIP static LoadBalancer NetworkSegments BYOLicence BackupTier ServerRole SLA
