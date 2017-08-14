@@ -84,7 +84,7 @@
   },
   "variables": {
     "adVnet-id": "[resourceId(parameters('adVnetRG'), 'Microsoft.Network/virtualNetworks', parameters('adVnetName'))]",
-    "assetLocation": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/SingleServerADJoinDSC/",
+    "assetLocation": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/WindowsServerJoinDSC/",
     "cbdnsLabelPrefix": "[concat('cbd', resourceGroup().name)]",
     "gatewayIpRef": "gatewaypublicIp",
     "gwdnsLabelPrefix": "[concat('gwd', resourceGroup().name)]",
@@ -96,7 +96,7 @@
     "storageAccountName": "[tolower(concat('rdsa', uniqueString(resourceGroup().id)))]",
     "storageAccountType": "Standard_LRS",
     "uniqueStorageAccountContainerName": "[concat('sac', resourceGroup().name)]",
-    "modulseUrl": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/SingleServerADJoinDSC/UpdateLCMforAAPull.zip",
+    "modulseUrl": "https://bojtest.blob.core.windows.net/azurelcm/UpdateLCMforAAPull.zip",
     "configurationScript": "UpdateLCMforAAPull.ps1",
     "configurationFunction": "ConfigureLCMforAAPull"
   },
@@ -329,12 +329,12 @@
           "type": "Microsoft.Compute/virtualMachines/extensions",
           "location": "[resourceGroup().location]",
           "apiVersion": "2016-04-30-preview",
-          "dependsOn": [ "[resourceId('Microsoft.Compute/virtualMachines', 'gw-vm')]" ],
+          "dependsOn": "[resourceId('Microsoft.Compute/virtualMachines', parameters('VMName'))]",
           "properties": {
-            "publisher": "Microsoft.Powershell",
-            "type": "DSC",
-            "typeHandlerVersion": "2.20",
             "autoUpgradeMinorVersion": true,
+            "protectedSettings": {
+            },
+            "publisher": "Microsoft.Powershell",
             "settings": {
               "configuration": {
                 "url": "[variables('modulseUrl')]",
@@ -344,7 +344,7 @@
               "configurationArguments": {
                 "RegistrationKey": "m+oIgtyj7iWTqVsLJNwYB/XbxZmrcKEy7HachwojsGLr3itiOstlRdgpr7/ZbqJC9pjFd5alS3Zl2QRJNNbUPg==",
                 "RegistrationUrl": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a2df28ae-1e78-4688-8bd4-3b295718117f",
-                "NodeConfigurationName": "RemoteDesktopSingleServer.localhost",
+                "NodeConfigurationName": "EE_JoinProdDomain.localhost.localhost",
                 "ConfigurationMode": "ApplyOnly",
                 "ConfigurationModeFrequencyMins": "15",
                 "RefreshFrequencyMins": "30",
@@ -354,8 +354,8 @@
                 "Timestamp": "7/05/2017 1:28:18 AM"
               }
             },
-            "protectedSettings": {
-            }
+            "type": "DSC",
+            "typeHandlerVersion": "2.20"
           }
         }
       ],
