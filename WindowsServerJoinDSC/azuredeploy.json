@@ -329,12 +329,12 @@
           "type": "Microsoft.Compute/virtualMachines/extensions",
           "location": "[resourceGroup().location]",
           "apiVersion": "2016-04-30-preview",
-          "dependsOn": [ "[resourceId('Microsoft.Compute/virtualMachines', 'gw-vm')]" ],
+          "dependsOn": "[concat('Microsoft.Compute/virtualMachines/', parameters('VMName'))]",
           "properties": {
-            "publisher": "Microsoft.Powershell",
-            "type": "DSC",
-            "typeHandlerVersion": "2.20",
             "autoUpgradeMinorVersion": true,
+            "protectedSettings": {
+            },
+            "publisher": "Microsoft.Powershell",
             "settings": {
               "configuration": {
                 "url": "[variables('modulseUrl')]",
@@ -354,8 +354,8 @@
                 "Timestamp": "7/05/2017 1:28:18 AM"
               }
             },
-            "protectedSettings": {
-            }
+            "type": "DSC",
+            "typeHandlerVersion": "2.20"
           }
         }
       ],
