@@ -53,7 +53,7 @@
     "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
     "modulseUrl": "https://bojtest.blob.core.windows.net/azurelcm/UpdateLCMforAAPull.zip",
     "configurationScript": "UpdateLCMforAAPull.ps1",
-    "configurationFunction": "ConfigureLCMforAAPull"
+    "configurationFunction": "UpdateLCMforAAPull"
   },
   "resources": [
     {
