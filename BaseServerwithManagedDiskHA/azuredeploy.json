@@ -30,17 +30,12 @@
         "no"
       ]
     },
-    "_artifactsLocation": {
+    "_NewNetworkSecurityGroup": {
       "type": "string",
-      "metadata": {
-        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
-      }
-    },
-    "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Auto-generated token to access _artifactsLocation"
-      }
+      "allowedValues": [
+        "yes",
+        "no"
+      ]
     },
     "location": {
       "type": "string"
@@ -114,6 +109,30 @@
     },
     "DSCConfigurationFunction": {
       "type": "string"
+    },
+    "ImagePublisher": {
+      "type": "string"
+    },
+    "PublisherOffers": {
+      "type": "string"
+    },
+    "AzureImageSKUs": {
+      "type": "string"
+    },
+    "AzureImageVersion": {
+      "type": "string"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Auto-generated token to access _artifactsLocation"
+      }
     }
   },
     "variables": {
@@ -145,10 +164,10 @@
           },
           "storageProfile": {
             "imageReference": {
-              "publisher": "MicrosoftWindowsServer",
-              "offer": "WindowsServer",
-              "sku": "2016-Datacenter",
-              "version": "latest"
+              "publisher": "[parameters('ImagePublisher')]",
+              "offer": "[parameters('PublisherOffers')]",
+              "sku": "[parameters('AzureImageSKUs')]",
+              "version": "[parameters('AzureImageVersion')]"
             },
             "osDisk": {
               "createOption": "fromImage",
@@ -293,6 +312,7 @@
         }
       },
       {
+        "condition": "[equals(parameters('_NewNetworkSecurityGroup'),'yes')]",
         "name": "[parameters('networkSecurityGroupName')]",
         "type": "Microsoft.Network/networkSecurityGroups",
         "apiVersion": "2016-09-01",
