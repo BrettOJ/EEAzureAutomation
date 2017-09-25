@@ -57,7 +57,7 @@
       "value": "Yes"
     },
     "Public IP": {
-      "value": "Yes"
+      "value": "Private"
     },
     "DSCNodeRole": {
       "value": "IIS-Web"
@@ -102,22 +102,19 @@
       "value": "diagsticsStorageAccount"
     },
     "diagnosticsStorageAccountId": {
-      "value": "diagsticsStorageAccountId"
+      "value": "eevmtest-pubip"
     },
     "resourceGroupName": {
       "value": "eevmtest-rg"
     },
     "virtualNetworkName": {
-      "value": "VNet_Prod_aueast"
+      "value": "VNet_NonProd_aueast"
     },
     "_DSCManagedNode": {
       "value": "Yes"
     },
     "_newResourceGroup": {
       "value": "Existing"
-    },
-    "addressPrefix": {
-      "value": "10.0.0.1/24"
     },
     "SLA": {
       "value": "Mon-Sunday (24x7)"
@@ -126,7 +123,7 @@
       "value": "https://ase-agentservice-prod-1.azure-automation.net/accounts/f1c49d4f-34b1-4f80-ab9e-de05ac73daf3"
     },
     "diagnosticsStorageAccountName": {
-      "value": "diagsticsStorageAccountName"
+      "value": "eevmtest-diagsa"
     },
     "_virtualNetwork": {
       "value": "Existing"
@@ -137,8 +134,11 @@
     "availabilitySetPlatformFaultDomainCount": {
       "value": "2"
     },
+    "subnetPrefix": {
+      "value": "10.30.192.0/21"
+    },
     "subnetName": {
-      "value": "Subnet_Application_Prod_aueast"
+      "value": "Subnet_Application_NonProd_aueast"
     },
     "AzureImageSKUs": {
       "value": "2016-Datacenter"
