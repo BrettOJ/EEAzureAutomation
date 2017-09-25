@@ -211,7 +211,7 @@
       }
     },
     {
-      "condition": "[equals(parameters('_availabilitySet'),'yes')]",
+      "condition": "[equals(parameters('_virtualNetwork'),'new')]",
       "name": "[parameters('virtualNetworkName')]",
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2016-12-01",
