@@ -74,15 +74,6 @@
     "availabilitySetPlatformUpdateDomainCount": {
       "type": "string"
     },
-    "diagnosticsStorageAccountName": {
-      "type": "string"
-    },
-    "diagnosticsStorageAccountId": {
-      "type": "string"
-    },
-    "diagnosticsStorageAccountType": {
-      "type": "string"
-    },
     "addressPrefix": {
       "type": "string"
     },
@@ -119,23 +110,15 @@
     "AzureImageVersion": {
       "type": "string"
     },
-    "_artifactsLocation": {
-      "type": "string",
-      "metadata": {
-        "description": "Auto-generated container in staging storage account to receive post-build staging folder upload"
-      }
-    },
-    "_artifactsLocationSasToken": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Auto-generated token to access _artifactsLocation"
-      }
+    "diagnosticsStorageAccountName": {
+      "type": "string"
     }
   },
-    "variables": {
-      "vnetId": "[resourceId('testvmrg','Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
-      "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]"
-    },
+  "variables": {
+    "vnetId": "[resourceId('testvmrg','Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+    "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
+    "PublicIPAllocationMethod": "Dynamic"
+  },
   "resources": [
     {
       "name": "[parameters('virtualMachineName')]",
@@ -211,16 +194,14 @@
             "autoUpgradeMinorVersion": true,
             "settings": {
               "configuration": {
-                "url": "[concat(parameters('_artifactsLocation'), '/', parameters('DSCModuleLocation'), '/', parameters('DSCConfigurationFunction'))]",
+                "modulesUrl": "[concat(parameters('DSCModuleLocation'), '/', parameters('DSCConfigurationFunction'))]",
                 "script": "DSC.ps1",
-                "function": "Main"
+                "configurationfunction": "Main"
               },
               "configurationArguments": {
                 "nodeName": "[parameters('virtualMachineName')]"
-              }
-            },
-            "protectedSettings": {
-              "configurationUrlSasToken": "[parameters('_artifactsLocationSasToken')]"
+              },
+            "protectedSettings": ""
             }
           }
         }
@@ -254,7 +235,7 @@
           {
             "name": "[parameters('subnetName')]",
             "properties": {
-              "addressPrefix": "[parameters('subnetPrefix')]"
+              "addressPrefix": "[parameters('addressPrefix')]"
             }
           }
         ]
@@ -296,7 +277,7 @@
       "apiVersion": "2016-09-01",
       "location": "[parameters('location')]",
       "properties": {
-        "publicIpAllocationMethod": "[parameters('publicIpAddressType')]"
+        "publicIpAllocationMethod": "[variables('PublicIPAllocationMethod')]"
       }
     },
     {
@@ -312,7 +293,7 @@
             "properties": {
               "priority": 1000,
               "sourceAddressPrefix": "*",
-              "protocol": "TCP",
+              "protocol": "Tcp",
               "destinationPortRange": "3389",
               "access": "Allow",
               "direction": "Inbound",
