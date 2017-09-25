@@ -26,8 +26,8 @@
     "_publicIPAddress": {
       "type": "string",
       "allowedValues": [
-        "yes",
-        "no"
+        "Public",
+        "Private"
       ]
     },
     "_NewNetworkSecurityGroup": {
@@ -56,9 +56,6 @@
       "type": "string"
     },
     "virtualNetworkName": {
-      "type": "string"
-    },
-    "networkInterfaceName": {
       "type": "string"
     },
     "networkSecurityGroupName": {
@@ -117,6 +114,7 @@
   "variables": {
     "vnetId": "[resourceId('testvmrg','Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
+    "networkInterfaceName": "[concat(parameters('virtualMachineName'), '-', parameters('_publicIPAddress'))]",
     "PublicIPAllocationMethod": "Dynamic"
   },
   "resources": [
@@ -126,7 +124,7 @@
       "apiVersion": "2016-04-30-preview",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceName'))]",
+        "[concat('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]",
         "[concat('Microsoft.Compute/availabilitySets/', parameters('availabilitySetName'))]"
       ],
       "properties": {
@@ -200,7 +198,7 @@
               "configurationArguments": {
                 "nodeName": "[parameters('virtualMachineName')]"
               },
-            "protectedSettings": ""
+              "protectedSettings": ""
             }
           }
         }
@@ -241,7 +239,8 @@
       }
     },
     {
-      "name": "[parameters('networkInterfaceName')]",
+      "condition": "[equals(parameters('_publicIPAddress'),'Public')]",
+      "name": "(variables('networkInterfaceName')",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2016-09-01",
       "location": "[parameters('location')]",
@@ -271,6 +270,34 @@
       }
     },
     {
+      "condition": "[equals(parameters('_publicIPAddress'),'Private')]",
+      "name": "(variables('networkInterfaceName')",
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2016-09-01",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
+        "[concat('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              },
+              "privateIPAllocationMethod": "Dynamic"
+            }
+          }
+        ],
+        "networkSecurityGroup": {
+          "id": "[resourceId('testvmrg', 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
+        }
+      }
+    },
+    {
+      "condition": "[equals(parameters('_publicIPAddress'),'Public')]",
       "name": "[parameters('publicIpAddressName')]",
       "type": "Microsoft.Network/publicIpAddresses",
       "apiVersion": "2016-09-01",
