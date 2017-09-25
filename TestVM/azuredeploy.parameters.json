@@ -134,7 +134,7 @@
     "availabilitySetPlatformFaultDomainCount": {
       "value": "2"
     },
-    "subnetPrefix": {
+    "addressPrefix": {
       "value": "10.30.192.0/21"
     },
     "subnetName": {
