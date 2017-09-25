@@ -116,8 +116,8 @@
     "_newResourceGroup": {
       "value": "Existing"
     },
-    "vNetRG": {
-      "value": "EENonProdInfraSoutheast"
+    "vNetrg": {
+      "value": "EENonProdInfraEast"
     },
     "addressPrefix": {
       "value": "10.30.192.0/21"
