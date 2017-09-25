@@ -77,6 +77,9 @@
     "subnetName": {
       "type": "string"
     },
+    "vNetrg": {
+      "type": "string"
+    },
     "publicIpAddressName": {
       "type": "string"
     },
@@ -109,7 +112,7 @@
     }
   },
   "variables": {
-    "vnetId": "[resourceId('testvmrg','Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+    "vnetId": "[resourceId(parameters('vNetrg'),'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
     "networkInterfaceName": "[concat(parameters('virtualMachineName'), '-', parameters('_publicIPAddress'))]",
     "PublicIPAllocationMethod": "Dynamic"
