@@ -2,110 +2,152 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "location": {
-      "value": "string"
+    "_NewNetworkSecurityGroup": {
+      "value": "Yes"
     },
-    "virtualMachineName": {
-      "value": "string"
-    },
-    "virtualMachineSize": {
-      "value": "string"
-    },
-    "adminUsername": {
-      "value": "string"
-    },
-    "_virtualNetwork": {
-      "value": "no"
-    },
-    "virtualNetworkName": {
-      "value": "string"
-    },
-    "networkInterfaceName": {
-      "value": "string"
-    },
-    "networkSecurityGroupName": {
-      "value": "string"
-    },
-    "adminPassword": {
-      "value": "securestring"
-    },
-    "DiskPerformance": {
-      "value": "string"
-    },
-    "_availabilitySet": {
-      "value": "no"
-    },
-    "availabilitySetName": {
-      "value": "string"
-    },
-    "availabilitySetPlatformFaultDomainCount": {
-      "value": "string"
-    },
-    "availabilitySetPlatformUpdateDomainCount": {
-      "value": "string"
-    },
-    "diagnosticsStorageAccountName": {
-      "value": "string"
-    },
-    "diagnosticsStorageAccountType": {
-      "value": "string"
-    },
-    "diagnosticsStorageAccountId": {
-      "value": "string"
-    },
-    "addressPrefix": {
-      "value": "string"
-    },
-    "subnetName": {
-      "value": "string"
-    },
-    "subnetPrefix": {
-      "value": "string"
-    },
-    "_publicIPAddress": {
-      "value": "no"
-    },
-    "publicIpAddressName": {
-      "value": "string"
-    },
-    "publicIpAddressType": {
-      "value": "string"
-    },
-    "AutomationRegURL": {
-      "value": "string"
+    "_AutomationAccountName": {
+      "value": "AzureAutomationProduction"
     },
     "AutomationRegKey": {
-      "value": "string"
+      "value": "lYh2ZOTWJYAXDuJJLmGDpZLne2L96IyYabivU4Nv78iA6pO2SW4cvgPEakVipumGO3iT8xSNryhSjVVNQZsoHw=="
     },
-    "_DSCManagedNode": {
-      "value": "yes"
+    "_availabilitySet": {
+      "value": "No"
     },
-    "DSCNodeRole": {
-      "value": "IIS"
-    },
-    "DSCModulesurl": {
-      "value": "string"
-    },
-    "DSCConfigurationFunction": {
-      "value": "string"
-    },
-    "_artifactsLocation": {
-      "value": "string"
+    "DSCModuleLocation": {
+      "value": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/RDSClusterADJoin/UpdateLCMforAAPull.zip"
     },
     "_artifactsLocationSasToken": {
-      "value": "securestring"
-    },
-    "ImagePublisher": {
-      "value": "string"
+      "value": "_artifactsLocationSasToken"
     },
     "PublisherOffers": {
-      "value": "string"
+      "value": "WindowsServer"
     },
-    "AzureImageSKUs": {
-      "value": "string"
+    "adminPassword": {
+      "value": "Password@1"
+    },
+    "Environment (Prod DEV) ": {
+      "value": "EENONPROD01"
+    },
+    "virtualMachineSize": {
+      "value": "Standard_D4"
+    },
+    "availabilitySetPlatformUpdateDomainCount": {
+      "value": "2"
+    },
+    "Backup Tier": {
+      "value": "Snapshot"
+    },
+    "DiskPerformance": {
+      "value": "SSD"
+    },
+    "networkSecurityGroupName": {
+      "value": "eevmtest-nsg"
+    },
+    "Location": {
+      "value": "AustraliaEast"
+    },
+    "_artifactsLocation": {
+      "value": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/RDSClusterADJoin/UpdateLCMforAAPull.zip"
     },
     "AzureImageVersion": {
-      "value": "string"
+      "value": "2016.127.20170421"
+    },
+    "_publicIPAddress": {
+      "value": "Yes"
+    },
+    "Public IP": {
+      "value": "Yes"
+    },
+    "DSCNodeRole": {
+      "value": "IIS-Web"
+    },
+    "Storage Account Name": {
+      "value": "vmteststs01"
+    },
+    "Managed Disk": {
+      "value": "Yes"
+    },
+    "Monitoring": {
+      "value": "Yes"
+    },
+    "adminUsername": {
+      "value": "bojadmin"
+    },
+    "availabilitySetName": {
+      "value": "vmtest-avset-s01"
+    },
+    "networkInterfaceName": {
+      "value": "eevmtest-nic"
+    },
+    "publicIpAddressName": {
+      "value": "eevmtest-pubip"
+    },
+    "BYOLicense": {
+      "value": "No"
+    },
+    "ImagePublisher": {
+      "value": "MicrosoftWindowsServer"
+    },
+    "VMAgent": {
+      "value": "Yes"
+    },
+    "virtualMachineName": {
+      "value": "VMTEST"
+    },
+    "SubscriptionID": {
+      "value": "c6af6ae2-9944-4751-b114-790536486ec8"
+    },
+    "diagnosticsStorageAccountType": {
+      "value": "diagsticsStorageAccount"
+    },
+    "diagnosticsStorageAccountId": {
+      "value": "diagsticsStorageAccountId"
+    },
+    "resourceGroupName": {
+      "value": "eevmtest-rg"
+    },
+    "virtualNetworkName": {
+      "value": "VNet_Prod_aueast"
+    },
+    "_DSCManagedNode": {
+      "value": "Yes"
+    },
+    "_newResourceGroup": {
+      "value": "Existing"
+    },
+    "addressPrefix": {
+      "value": "10.0.0.1/24"
+    },
+    "SLA": {
+      "value": "Mon-Sunday (24x7)"
+    },
+    "AutomationRegURL": {
+      "value": "https://ase-agentservice-prod-1.azure-automation.net/accounts/f1c49d4f-34b1-4f80-ab9e-de05ac73daf3"
+    },
+    "diagnosticsStorageAccountName": {
+      "value": "diagsticsStorageAccountName"
+    },
+    "_virtualNetwork": {
+      "value": "Existing"
+    },
+    "InternalIPAddressDHCP": {
+      "value": "Dynamic"
+    },
+    "availabilitySetPlatformFaultDomainCount": {
+      "value": "2"
+    },
+    "subnetName": {
+      "value": "Subnet_Application_Prod_aueast"
+    },
+    "AzureImageSKUs": {
+      "value": "2016-Datacenter"
+    },
+    "Replication": {
+      "value": "No"
+    },
+    "DSCConfigurationFunction": {
+      "value": "UpdateLCMforAAPull.ps1"
     }
   }
 }
