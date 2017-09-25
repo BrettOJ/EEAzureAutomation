@@ -37,7 +37,7 @@
         "no"
       ]
     },
-    "location": {
+    "Location": {
       "type": "string"
     },
     "virtualMachineName": {
