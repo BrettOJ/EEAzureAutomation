@@ -106,9 +106,6 @@
     },
     "AzureImageVersion": {
       "type": "string"
-    },
-    "diagnosticsStorageAccountName": {
-      "type": "string"
     }
   },
   "variables": {
@@ -157,15 +154,9 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaceName'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
             }
           ]
-        },
-        "diagnosticsProfile": {
-          "bootDiagnostics": {
-            "enabled": true,
-            "storageUri": "[reference(resourceId('testvmrg', 'Microsoft.Storage/storageAccounts', parameters('diagnosticsStorageAccountName')), '2015-06-15').primaryEndpoints['blob']]"
-          }
         },
         "availabilitySet": {
           "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('availabilitySetName'))]"
@@ -330,6 +321,9 @@
         ]
       }
     }
+
+
+
   ],
     "outputs": {
       "adminUsername": {
