@@ -240,7 +240,7 @@
     },
     {
       "condition": "[equals(parameters('_publicIPAddress'),'Public')]",
-      "name": "(variables('networkInterfaceName')",
+      "name": "[concat(parameters('virtualMachineName'), '-Public')]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2016-09-01",
       "location": "[parameters('location')]",
@@ -271,7 +271,7 @@
     },
     {
       "condition": "[equals(parameters('_publicIPAddress'),'Private')]",
-      "name": "(variables('networkInterfaceName')",
+      "name": "[concat(parameters('virtualMachineName'), '-Private')]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2016-09-01",
       "location": "[parameters('location')]",
