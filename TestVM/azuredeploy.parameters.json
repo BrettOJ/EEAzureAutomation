@@ -80,6 +80,9 @@
     "networkInterfaceName": {
       "value": "eevmtest-nic"
     },
+    "_diagnosticsEnabled": {
+      "value": "No"
+    },
     "publicIpAddressName": {
       "value": "eevmtest-pubip"
     },
@@ -101,9 +104,6 @@
     "diagnosticsStorageAccountType": {
       "value": "diagsticsStorageAccount"
     },
-    "diagnosticsStorageAccountId": {
-      "value": "eevmtest-pubip"
-    },
     "resourceGroupName": {
       "value": "eevmtest-rg"
     },
@@ -115,6 +115,12 @@
     },
     "_newResourceGroup": {
       "value": "Existing"
+    },
+    "vNetRG": {
+      "value": "EENonProdInfraSoutheast"
+    },
+    "addressPrefix": {
+      "value": "10.30.192.0/21"
     },
     "SLA": {
       "value": "Mon-Sunday (24x7)"
@@ -133,9 +139,6 @@
     },
     "availabilitySetPlatformFaultDomainCount": {
       "value": "2"
-    },
-    "addressPrefix": {
-      "value": "10.30.192.0/21"
     },
     "subnetName": {
       "value": "Subnet_Application_NonProd_aueast"

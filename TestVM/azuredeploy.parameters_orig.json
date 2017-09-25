@@ -106,6 +106,9 @@
     },
     "AzureImageVersion": {
       "value": "string"
-    }
-  }
+    },
+    "vNetrg": {
+        "value": "string"
+      }
+   }
 }
