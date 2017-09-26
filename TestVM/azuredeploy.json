@@ -95,6 +95,9 @@
     "DSCModuleLocation": {
       "type": "string"
     },
+    "DSCConfigurationScript": {
+      "type": "string"
+    },
     "DSCConfigurationFunction": {
       "type": "string"
     },
@@ -115,7 +118,8 @@
     "vnetId": "[resourceId(parameters('vNetrg'),'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
     "networkInterfaceName": "[concat(parameters('virtualMachineName'), '-', parameters('_publicIPAddress'))]",
-    "PublicIPAllocationMethod": "Dynamic"
+    "PublicIPAllocationMethod": "Dynamic",
+    "adDomainName": "CORP"
   },
   "resources": [
     {
@@ -183,17 +187,24 @@
             "type": "DSC",
             "typeHandlerVersion": "2.9",
             "autoUpgradeMinorVersion": true,
-            "settings": {
-              "configuration": {
-                "modulesUrl": "[concat(parameters('DSCModuleLocation'), '/', parameters('DSCConfigurationFunction'))]",
-                "script": "DSC.ps1",
-                "configurationfunction": "Main"
-              },
-              "configurationArguments": {
-                "nodeName": "[parameters('virtualMachineName')]"
-              },
-              "protectedSettings": ""
-            }
+            "configuration": {
+              "url": "[parameters('DSCModuleLocation')]",
+              "script": "[parameters('DSCConfigurationScript')]",
+              "function": "[parameters('DSCConfigurationFunction')]"
+            },
+            "configurationArguments": {
+              "RegistrationKey": "[parameters('AutomationRegKey')]",
+              "RegistrationUrl": "[parameters('AutomationRegURL')]",
+              "NodeConfigurationName": "[parameters('DSCNodeRole')]",
+              "ConfigurationMode": "ApplyOnly",
+              "ConfigurationModeFrequencyMins": "15",
+              "RefreshFrequencyMins": "30",
+              "RebootNodeIfNeeded": false,
+              "ActionAfterReboot": "continueConfiguration",
+              "AllowModuleOverwrite": false,
+              "domainName": "[variables('adDomainName')]"
+            },
+            "protectedSettings" : {}
           }
         }
       ]

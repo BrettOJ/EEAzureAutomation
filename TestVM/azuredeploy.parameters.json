@@ -108,7 +108,7 @@
       "value": "eevmtest-rg"
     },
     "virtualNetworkName": {
-      "value": "VNet_NonProd_aueast"
+      "value": "VNet_NonProd_ausoutheast"
     },
     "_DSCManagedNode": {
       "value": "Yes"
@@ -117,10 +117,10 @@
       "value": "Existing"
     },
     "vNetrg": {
-      "value": "EENonProdInfraEast"
+      "value": "EENonProdInfraSoutheast"
     },
     "addressPrefix": {
-      "value": "10.30.192.0/21"
+      "value": "10.32.0.0/29"
     },
     "SLA": {
       "value": "Mon-Sunday (24x7)"
@@ -141,10 +141,13 @@
       "value": "2"
     },
     "subnetName": {
-      "value": "Subnet_Application_NonProd_aueast"
+      "value": "Subnet_DMZ_NonProd_ausoutheast"
     },
     "AzureImageSKUs": {
       "value": "2016-Datacenter"
+    },
+    "DSCConfigurationScript": {
+      "value": "UpdateLCMforAAPull.ps1"
     },
     "Replication": {
       "value": "No"
