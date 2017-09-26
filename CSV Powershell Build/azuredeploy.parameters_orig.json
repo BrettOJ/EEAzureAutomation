@@ -1,0 +1,114 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "string"
+    },
+    "virtualMachineName": {
+      "value": "string"
+    },
+    "virtualMachineSize": {
+      "value": "string"
+    },
+    "adminUsername": {
+      "value": "string"
+    },
+    "_virtualNetwork": {
+      "value": "string"
+    },
+    "virtualNetworkName": {
+      "value": "string"
+    },
+    "networkInterfaceName": {
+      "value": "string"
+    },
+    "networkSecurityGroupName": {
+      "value": "string"
+    },
+    "adminPassword": {
+      "value": "securestring"
+    },
+    "DiskPerformance": {
+      "value": "string"
+    },
+    "_availabilitySet": {
+      "value": "string"
+    },
+    "availabilitySetName": {
+      "value": "string"
+    },
+    "availabilitySetPlatformFaultDomainCount": {
+      "value": "string"
+    },
+    "availabilitySetPlatformUpdateDomainCount": {
+      "value": "string"
+    },
+    "diagnosticsStorageAccountName": {
+      "value": "string"
+    },
+    "diagnosticsStorageAccountType": {
+      "value": "string"
+    },
+    "diagnosticsStorageAccountId": {
+      "value": "string"
+    },
+    "addressPrefix": {
+      "value": "string"
+    },
+    "subnetName": {
+      "value": "string"
+    },
+    "subnetPrefix": {
+      "value": "string"
+    },
+    "_publicIPAddress": {
+      "value": "string"
+    },
+    "publicIpAddressName": {
+      "value": "string"
+    },
+    "publicIpAddressType": {
+      "value": "string"
+    },
+    "AutomationRegURL": {
+      "value": "string"
+    },
+    "AutomationRegKey": {
+      "value": "string"
+    },
+    "_DSCManagedNode": {
+      "value": "string"
+    },
+    "DSCNodeRole": {
+      "value": "string"
+    },
+    "DSCModulesurl": {
+      "value": "string"
+    },
+    "DSCConfigurationFunction": {
+      "value": "string"
+    },
+    "_artifactsLocation": {
+      "value": "string"
+    },
+    "_artifactsLocationSasToken": {
+      "value": "securestring"
+    },
+    "ImagePublisher": {
+      "value": "string"
+    },
+    "PublisherOffers": {
+      "value": "string"
+    },
+    "AzureImageSKUs": {
+      "value": "string"
+    },
+    "AzureImageVersion": {
+      "value": "string"
+    },
+    "vNetrg": {
+        "value": "string"
+      }
+   }
+}

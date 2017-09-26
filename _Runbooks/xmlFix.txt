@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<RDSScale>  
+  <Azure>
+    <Variable Name="AzurePublishSettingFile" Value="INSERT PATH TO PUBLISH FILE"/>
+    <Variable Name="CurrentAzureSubscriptionName" Value="INSERT SUBSCRIPTION"/>
+    <Variable Name="CloudServiceName" Value="INSERT CLOUD SERVICE"/>
+  </Azure>
+  <RDSScaleSettings>
+    <Variable Name="BeginPeakTime" Value="08:00:00"/>
+    <Variable Name="EndPeakTime" Value="17:00:00"/>
+    <Variable Name="TimeDifferenceInHours" Value="+1" />
+    <Variable Name="SessionThresholdPerCPU" Value="3"/>
+    <Variable Name="MinimumNumberOfRDSH" Value="1"/>
+    <Variable Name="LimitSecondsToForceLogOffUser" Value="120"/>
+    <Variable Name="LogOffMessageTitle" Value="System Under Maintenance"/>
+    <Variable Name="LogOffMessageBody" Value="Please save your work and logoff!"/>
+  </RDSScaleSettings>
+</RDSScale>

@@ -1,0 +1,4 @@
+
+EE_SQLWitnessShareName - "SQLWitnessShare"
+
+EE_SqlAlwaysOnEndpointName - 
