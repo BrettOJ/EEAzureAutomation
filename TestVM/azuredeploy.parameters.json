@@ -6,10 +6,10 @@
       "value": "Yes"
     },
     "_AutomationAccountName": {
-      "value": "AzureAutomationProduction"
+      "value": "Admin-EENONPROD01-aa"
     },
     "AutomationRegKey": {
-      "value": "lYh2ZOTWJYAXDuJJLmGDpZLne2L96IyYabivU4Nv78iA6pO2SW4cvgPEakVipumGO3iT8xSNryhSjVVNQZsoHw=="
+      "value": "f2CHFMFa2ZFx6Fq++xYnRKj3uD05ntPkkd1UXEH/GzDGsSlS5j/niFz2kXR7prMzfx3vdj7L+njt3aUL72iWrg=="
     },
     "_availabilitySet": {
       "value": "No"
@@ -126,7 +126,7 @@
       "value": "Mon-Sunday (24x7)"
     },
     "AutomationRegURL": {
-      "value": "https://ase-agentservice-prod-1.azure-automation.net/accounts/f1c49d4f-34b1-4f80-ab9e-de05ac73daf3"
+      "value": "https://ase-agentservice-prod-1.azure-automation.net/accounts/a70ebbe5-f342-4ba9-89fe-eb92e8535202"
     },
     "diagnosticsStorageAccountName": {
       "value": "eevmtest-diagsa"
