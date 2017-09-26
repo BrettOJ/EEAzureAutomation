@@ -149,7 +149,7 @@
           "osDisk": {
             "createOption": "fromImage",
             "managedDisk": {
-              "storageAccountType": "[parameters('DiskPerformance')]"
+              "storageAccountType": ""
             }
           },
           "dataDisks": []
