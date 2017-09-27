@@ -60,7 +60,7 @@
       "value": "Private"
     },
     "DSCNodeRole": {
-      "value": "IIS-Web"
+      "value": "EE_InstalliiS.localhost"
     },
     "Storage Account Name": {
       "value": "vmteststs01"
