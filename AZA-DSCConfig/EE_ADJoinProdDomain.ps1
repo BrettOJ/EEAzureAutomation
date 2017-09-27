@@ -8,7 +8,7 @@ configuration EE_JoinProdDomain
     
     Import-DscResource -ModuleName xActiveDirectory, xComputerManagement
 
-    $adminCreds = Get-AutomationPSCredential -Name 'EEJoinDomain'
+    $adminCreds = Get-AutomationPSCredential -Name 'EEDomainAdmin'
     
    
     Node localhost

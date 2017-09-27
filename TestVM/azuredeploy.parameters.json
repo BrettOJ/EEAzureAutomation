@@ -45,7 +45,7 @@
       "value": "eevmtest-nsg"
     },
     "Location": {
-      "value": "AustraliaEast"
+      "value": "Australiasoutheast"
     },
     "_artifactsLocation": {
       "value": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/RDSClusterADJoin/UpdateLCMforAAPull.zip"
@@ -54,13 +54,13 @@
       "value": "2016.127.20170421"
     },
     "_publicIPAddress": {
-      "value": "Yes"
+      "value": "Private"
     },
     "Public IP": {
       "value": "Private"
     },
     "DSCNodeRole": {
-      "value": "IIS-Web"
+      "value": "EE_InstalliiS.localhost"
     },
     "Storage Account Name": {
       "value": "vmteststs01"
@@ -114,7 +114,7 @@
       "value": "Yes"
     },
     "_newResourceGroup": {
-      "value": "Existing"
+      "value": "new"
     },
     "vNetrg": {
       "value": "EENonProdInfraSoutheast"
@@ -153,7 +153,7 @@
       "value": "No"
     },
     "DSCConfigurationFunction": {
-      "value": "UpdateLCMforAAPull.ps1"
+      "value": "ConfigureLCMforAAPull"
     }
   }
 }
