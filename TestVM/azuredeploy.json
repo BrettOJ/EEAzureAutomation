@@ -196,7 +196,7 @@
               "configuration": {
                 "url": "[parameters('DSCModuleLocation')]",
                 "script": "[parameters('DSCConfigurationScript')]",
-                "configurationFunction": "[parameters('DSCConfigurationFunction')]"
+                "function": "[parameters('DSCConfigurationFunction')]"
               },
               "configurationArguments": {
                 "RegistrationKey": "[parameters('AutomationRegKey')]",
