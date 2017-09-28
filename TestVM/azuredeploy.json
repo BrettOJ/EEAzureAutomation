@@ -175,7 +175,7 @@
           "name": "Microsoft.Powershell.DSC",
           "type": "extensions",
           "location": "[parameters('location')]",
-          "apiVersion": "2016-04-30-preview",
+          "apiVersion": "2015-06-15",
           "dependsOn": [
             "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachineName'))]"
           ],
@@ -187,21 +187,17 @@
             "type": "DSC",
             "typeHandlerVersion": "2.9",
             "autoUpgradeMinorVersion": true,
-            "configuration": {
-              "modulesurl": "[parameters('DSCModuleLocation')]",
-              "configurationFunction": "UpdateLCMforAAPull.ps1\\ConfigureLCMforAAPull"
-            },
-            "configurationArguments": {
-              "RegistrationKey": "[parameters('AutomationRegKey')]",
-              "RegistrationUrl": "[parameters('AutomationRegURL')]",
-              "NodeConfigurationName": "[parameters('DSCNodeRole')]",
-              "ConfigurationMode": "ApplyOnly",
-              "ConfigurationModeFrequencyMins": "15",
-              "RefreshFrequencyMins": "30",
-              "RebootNodeIfNeeded": false,
-              "ActionAfterReboot": "continueConfiguration",
-              "AllowModuleOverwrite": false,
-              "domainName": "[variables('adDomainName')]"
+            "settings": {
+              "configuration": {
+                "url": "[parameters('DSCModuleLocation')]",
+                "configurationFunction": "UpdateLCMforAAPull.ps1\\ConfigureLCMforAAPull"
+              },
+              "configurationArguments": {
+                "RegistrationKey": "[parameters('AutomationRegKey')]",
+                "RegistrationUrl": "[parameters('AutomationRegURL')]",
+                "NodeConfigurationName": "[parameters('DSCNodeRole')]",
+                "domainName": "[variables('adDomainName')]"
+              }
             },
             "protectedSettings": {}
           }
