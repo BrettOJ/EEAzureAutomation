@@ -188,9 +188,8 @@
             "typeHandlerVersion": "2.9",
             "autoUpgradeMinorVersion": true,
             "configuration": {
-              "url": "[parameters('DSCModuleLocation')]",
-              "script": "[parameters('DSCConfigurationScript')]",
-              "function": "[parameters('DSCConfigurationFunction')]"
+              "modulesurl": "[parameters('DSCModuleLocation')]",
+              "configurationFunction": "UpdateLCMforAAPull.ps1\\ConfigureLCMforAAPull"
             },
             "configurationArguments": {
               "RegistrationKey": "[parameters('AutomationRegKey')]",

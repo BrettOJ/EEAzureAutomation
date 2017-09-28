@@ -48,7 +48,7 @@
       "value": "Australiasoutheast"
     },
     "_artifactsLocation": {
-      "value": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/TestVM/UpdateLCMforAAPull.zip"
+      "value": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/RDSClusterADJoin/UpdateLCMforAAPull.zip"
     },
     "AzureImageVersion": {
       "value": "2016.127.20170421"
