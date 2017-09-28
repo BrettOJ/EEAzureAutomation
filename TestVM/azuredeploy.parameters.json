@@ -15,7 +15,7 @@
       "value": "No"
     },
     "DSCModuleLocation": {
-      "value": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/RDSClusterADJoin/UpdateLCMforAAPull.zip"
+      "value": "https://raw.githubusercontent.com/BrettOJ/EEAzureAutomation/master/TestVM/UpdateLCMforAAPull.zip"
     },
     "_artifactsLocationSasToken": {
       "value": "_artifactsLocationSasToken"
