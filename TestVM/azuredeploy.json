@@ -195,7 +195,8 @@
             "settings": {
               "configuration": {
                 "url": "[parameters('DSCModuleLocation')]",
-                "configurationFunction": "UpdateLCMforAAPull.ps1\\ConfigureLCMforAAPull"
+                "script": "[parameters('DSCConfigurationScript')]",
+                "configurationFunction": "[parameters('DSCConfigurationFunction')]"
               },
               "configurationArguments": {
                 "RegistrationKey": "[parameters('AutomationRegKey')]",
