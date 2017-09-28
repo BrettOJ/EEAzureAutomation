@@ -196,6 +196,12 @@
               "RegistrationKey": "[parameters('AutomationRegKey')]",
               "RegistrationUrl": "[parameters('AutomationRegURL')]",
               "NodeConfigurationName": "[parameters('DSCNodeRole')]",
+              "ConfigurationMode": "ApplyOnly",
+              "ConfigurationModeFrequencyMins": "15",
+              "RefreshFrequencyMins": "30",
+              "RebootNodeIfNeeded": false,
+              "ActionAfterReboot": "continueConfiguration",
+              "AllowModuleOverwrite": false,
               "domainName": "[variables('adDomainName')]"
             },
             "protectedSettings": {}
