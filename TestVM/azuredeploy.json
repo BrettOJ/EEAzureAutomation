@@ -7,35 +7,40 @@
       "allowedValues": [
         "yes",
         "no"
-      ]
+      ],
+      "defaultValue": "yes"
     },
     "_virtualNetwork": {
       "type": "string",
       "allowedValues": [
         "new",
         "existing"
-      ]
+      ],
+      "defaultValue": "existing"
     },
     "_availabilitySet": {
       "type": "string",
       "allowedValues": [
         "yes",
         "no"
-      ]
+      ],
+      "defaultValue": "yes"
     },
     "_publicIPAddress": {
       "type": "string",
       "allowedValues": [
         "Public",
         "Private"
-      ]
+      ],
+      "defaultValue": "Private"
     },
     "_NewNetworkSecurityGroup": {
       "type": "string",
       "allowedValues": [
         "yes",
         "no"
-      ]
+      ],
+      "defaultValue": "yes"
     },
     "Location": {
       "type": "string"
